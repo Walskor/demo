@@ -1,0 +1,715 @@
+#1618275242
+passwd
+#1618275270
+ls
+#1618275273
+ll
+#1618275289
+cd `
+d
+d;
+;
+
+.
+exit
+....
+cd .
+/
+/
+;
+#1618275382
+mkdir ex0
+#1618275385
+cd ex0/
+#1618275389
+nano hello.c
+#1618275491
+gcc hello.c -o hello
+#1618275497
+nano hello.c
+#1618275509
+gcc hello.c -o hello
+#1618275518
+./hello 
+#1618275556
+exit
+#1618825610
+free
+#1618826821
+who
+#1618826841
+free
+#1618826947
+cp -R /home/proj0-base ~
+#1618826949
+ls
+#1618826986
+mv proj0-base proj0-revise
+#1618826988
+ls
+#1618833952
+cd proj0-revise/
+#1618833957
+ls
+#1618833960
+make qemu
+#1618834089
+free
+#1618834094
+who
+#1618834185
+make qemu
+#1618834192
+free
+#1618837836
+make qemu
+#1618837841
+make qume
+#1618837846
+cd proj0-revise/
+#1618837850
+make qume
+#1618837853
+make qemu
+#1618837890
+cd proj0-revise/
+#1618837897
+touch p30.c
+#1618837903
+vim p30.c 
+#1618838174
+vim Makefile
+#1618838219
+make
+#1618838226
+vim p30.c 
+#1618838262
+make
+#1618838281
+vim user.h 
+#1618838322
+nano user.h 
+#1618838347
+nano ulib.c
+#1618838385
+make
+#1618838390
+vim p30.
+#1618838400
+vim p30.c
+#1618838415
+make
+#1618838423
+make qemu
+#1618924496
+wo
+#1618924497
+wh9o
+#1618924499
+who
+#1618924512
+free
+#1618924544
+who
+#1618927277
+ls
+#1618927278
+cd proj0-revise/
+#1618927279
+ls
+#1618927288
+nano proc.c
+#1618927478
+ls
+#1618927481
+make
+#1618927491
+make qemu
+#1618927728
+make
+#1618927732
+ls proj0-revise/
+#1618927733
+make
+#1618927740
+cd proj0-revise/
+#1618927741
+make
+#1618927795
+make qemu
+#1618927887
+cd proj0-revise/
+#1618927889
+make
+#1618927893
+make qemu
+#1618928495
+make
+#1618928498
+ls proj0-revise/
+#1618928501
+cd proj0-revise/
+#1618928502
+make
+#1618928510
+make qemu
+#1618928583
+cd proj0-revise/
+#1618928586
+make qemu
+#1618929291
+who
+#1618929297
+cd proj0-revise/
+#1618929299
+ls
+#1618929309
+proc.c |  d
+#1618929314
+proc.c
+#1618929319
+vim proc.c
+#1618929348
+vim sysproc.h
+#1618929357
+vim sysproc.c
+#1618929389
+make
+#1618929907
+touch shutdown.c
+#1618929936
+ls
+#1618930267
+make
+#1618930792
+ls
+#1618930866
+cd p
+#1618930868
+cd proj0-revise/
+#1618930871
+ls
+#1618930876
+vim user.h 
+#1618930948
+make
+#1618931352
+make;
+#1618931356
+make
+#1618931607
+make qemu
+#1618930799
+nano user.h 
+#1618994227
+cd proj0-revise/
+#1618994231
+make qemu
+#1618994288
+make
+#1618994292
+make qemu
+#1618994499
+make
+#1618994502
+make qemu
+#1618994529
+make
+#1618994533
+make qemu
+#1618994578
+make
+#1618996423
+cd proj0-revise/
+#1618996424
+make
+#1618996435
+make qemu
+#1618996505
+cd .
+#1618996506
+cd ..
+#1618996517
+cp -R /home/proj0-base ~
+#1618996519
+ls
+#1618996541
+cd proj0-
+#1618996544
+exit
+#1619077720
+who
+#1619104457
+make qemu
+#1619104460
+cd proj0-
+#1619104466
+cd proj0-revise/
+#1619104468
+make
+#1619104471
+make qemu
+#1619104476
+free
+#1619104479
+top
+#1619104570
+make qemu
+#1619104573
+exit
+#1619225263
+dd -help
+#1619225267
+dd --help
+#1619230180
+mkfs --help
+#1619230228
+mkfs(8)
+#1619232037
+cd proj0-revise/
+#1619233982
+ls
+#1619233994
+vim _p30 
+#1619234083
+make qemu
+#1619234116
+exit
+#1619234125
+cd proj0-revise/
+#1619234127
+make qemu
+#1619234150
+ls
+#1619234154
+vim _p30 
+#1619234157
+make
+#1619234160
+make qemu
+#1619234265
+make q
+#1619234268
+cd proj0-revise/
+#1619234270
+make qemu
+#1619235164
+cd proj0-revise/
+#1619235165
+make qemu
+#1619235176
+who
+#1619235181
+kill wangke
+#1619235191
+kill pts/0
+#1619235225
+ps -aux
+#1619235232
+top
+#1619235251
+kill -9 20066
+#1619232039
+make qemu
+#1619235254
+top
+#1619237669
+cd proj0-revise/
+#1619237670
+make
+#1619237672
+make qemu
+#1619237677
+top
+#1619237686
+kill -9 29651
+#1619235262
+make qemu
+#1619237688
+make qemu
+#1619237703
+ls
+#1619237705
+vim main.c
+#1619237736
+MAKE
+#1619237739
+make
+#1619237744
+make qemu
+#1619268998
+cd proj0-revise/
+#1619269037
+make qemu
+#1619269051
+make
+#1619269054
+make qemu
+#1619270240
+top
+#1619270246
+who
+#1619270252
+top
+#1619270605
+cd proj0-revise/
+#1619270608
+make submit
+#1619270611
+ls
+#1619270651
+cd ..
+#1619270653
+ls
+#1619270665
+exit
+#1619270811
+ls
+#1619270815
+cd submit-proj0/
+#1619270816
+ls
+#1619270829
+cat proj0.patch 
+#1619270884
+exit
+#1619401007
+cp -R /home/proj1-base ~
+#1619401008
+ls
+#1619401045
+mv proj1-base proj1-revise
+#1619401048
+cp -R /home/proj1-base ~
+#1619401089
+exit
+#1619600034
+cd proj1-base/
+#1619600042
+locate shutdown
+#1619600072
+cd ..
+#1619600078
+cd proj1-revise/
+#1619600081
+make
+#1619600087
+make qemu
+#1619608046
+cd proj1-revise/
+#1619608048
+make
+#1619608288
+make qemu
+#1619608582
+make
+#1619608584
+make qemu
+#1619608629
+make
+#1619608632
+make qemu
+#1619608646
+make
+#1619608648
+make qemu
+#1619608673
+make
+#1619608675
+make qemu
+#1619609026
+make
+#1619609028
+make qemu
+#1619609052
+make
+#1619609054
+make qemu
+#1619609214
+make
+#1619609216
+make qemu
+#1619609268
+make
+#1619609270
+make qemu
+#1619609823
+cd proj1-revise/
+#1619609825
+ls
+#1619609830
+cat shutdown.c
+#1619609833
+make
+#1619609835
+make qemu
+#1619609907
+make
+#1619609925
+make qemu
+#1619609958
+make
+#1619609960
+make qemu
+#1619610237
+make
+#1619610267
+make qemu
+#1619610316
+cd proj1-revise/
+#1619610318
+make
+#1619610321
+make qemu
+#1619610392
+make
+#1619610394
+make qemu
+#1619612906
+cd proj1-revise/
+#1619612907
+make
+#1619612909
+make qemu
+#1619694233
+cd proj1-revise/
+#1619694269
+.gdbinit
+#1619694277
+vim .gdbint
+#1619694340
+cd proj1-revise/
+#1619694309
+make qemu-gdb
+#1619694342
+gdb
+#1619694522
+cd proj1-revise/
+#1619694523
+ls
+#1619694533
+cd ..
+#1619694538
+vim .gdbinit
+#1619694581
+cd proj1-revise/
+#1619694586
+rm .gdbinit
+#1619694588
+ls
+#1619694613
+cd proj1-revise/
+#1619697576
+cd proj1-r
+#1619697582
+cd proj1-revise/
+#1619697584
+gdb
+#1619697625
+who
+#1619697631
+top
+#1619697646
+cd proj1-revise/
+#1619697650
+make qemu-gdb 
+#1619697668
+top
+#1619697712
+kill -9 32295
+#1619697717
+who
+#1619697735
+top
+#1619697762
+kill -9 32626
+#1619697766
+make 
+#1619697769
+make qemu
+#1619697868
+who
+#1619697997
+yop
+#1619697999
+top
+#1619698015
+cd proj1-revise/
+#1619698018
+make qemu
+#1619698339
+ps -aux
+#1619698350
+kill -9 23050
+#1619698360
+kill -9 23046
+#1619698364
+kill -9 23077
+#1619698368
+ps -aux
+#1619698378
+kill -9 22430
+#1619694599
+make qemu-gdb 
+#1619698380
+kill -9 22431
+#1619698383
+ps -aux
+#1619698394
+kill -9 1131
+#1619698405
+cd proj1-revise/
+#1619698407
+make qemu
+#1619698427
+cd proj1-revise/
+#1619698412
+make qemu-gdb 
+#1619698429
+gdb
+#1619701566
+make qemu-gdb
+#1619701788
+make qemu-gdb 
+#1619703150
+make -g
+#1619703168
+make
+#1619703508
+vim Makefile
+#1619705786
+cd proj1-revise/
+#1619705794
+make qemu-gdb 
+#1619705806
+gdb
+#1620293799
+top
+#1620294081
+cd proj1-revise/
+#1620294083
+make qemu
+#1620294166
+cd ..
+#1620294167
+ls
+#1620294176
+cd proj1-revise/
+#1620294177
+ls
+#1620294213
+grep
+#1620294221
+grep gdb
+#1620296176
+cd proj1-revise/
+#1620296178
+make qemu
+#1620296701
+ps -aux
+#1620297052
+cd proj1-revise/
+#1620297054
+gdb
+#1620297006
+make qemu-gdb 
+#1620299538
+ls
+#1620299541
+cd proj1-revise/
+#1620299542
+ls
+#1620299551
+cat .gdbinit
+#1620299573
+vim .gdbinit
+#1620299580
+cd ..
+#1620299587
+cat .gdbinit 
+#1620300703
+cd proj1-revise/
+#1620300704
+make 
+#1620300711
+make
+#1620301067
+make qemu
+#1620301145
+make
+#1620303305
+cd proj1-revise/
+#1620303308
+make qemu
+#1620350613
+cd proj1-revise/
+#1620350615
+make qemu
+#1620351340
+cd proj1-e
+#1620351344
+cd proj1-revise/
+#1620351325
+make qemu-gdb 
+#1620351345
+gdb
+#1620351761
+make qemu-gdb
+#1620352180
+make qemu-gdb 
+#1620354417
+cd proj1-revise/
+#1620354434
+gdb
+#1620356317
+cd proj1-revise/
+#1620356322
+make qemu-gdb 
+#1620356330
+top
+#1620356340
+kill -9 23977
+#1620354427
+make qemu-gdb 
+#1620356376
+cd proj1-revise/
+#1620356344
+make qemu-gdb 
+#1620356378
+gdb
+#1620358315
+make qemu
+#1620358322
+make qemu
+#1620358626
+cd proj1-revise/
+#1620358629
+make submit
+#1620358633
+cd ..
+#1620358633
+ls
+#1620358657
+cd submit-proj1
+#1620358659
+ls
+#1620358661
+cat proj1.patch 
+#1620358666
+cd ..
+#1620358675
+exit
+#1620358740
+ls
+#1620358743
+cd submit-proj1
+#1620358744
+ls
+#1620477864
+cd -R /home/proj2-base ~
+#1620477877
+cp -R /home/proj2-base ~
+#1620477890
+mv proj2-base proj2-revise
+#1620477924
+git init

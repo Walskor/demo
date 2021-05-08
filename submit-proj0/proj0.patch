@@ -1,0 +1,201 @@
+diff -uNr /home/proj0-base/defs.h ./defs.h
+--- /home/proj0-base/defs.h	2021-04-16 23:59:41.481675712 +0800
++++ ./defs.h	2021-04-20 23:11:28.000000000 +0800
+@@ -120,6 +120,7 @@
+ int             wait(void);
+ void            wakeup(void*);
+ void            yield(void);
++int             sdown(void);
+ 
+ // swtch.S
+ void            swtch(struct context**, struct context*);
+diff -uNr /home/proj0-base/main.c ./main.c
+--- /home/proj0-base/main.c	2021-04-16 23:59:41.481675712 +0800
++++ ./main.c	2021-04-24 12:16:15.000000000 +0800
+@@ -52,6 +52,7 @@
+ mpmain(void)
+ {
+   cprintf("cpu%d: starting %d\n", cpuid(), cpuid());
++  cprintf("wangke 161840230\n");
+   idtinit();       // load idt register
+   xchg(&(mycpu()->started), 1); // tell startothers() we're up
+   scheduler();     // start running processes
+diff -uNr /home/proj0-base/Makefile ./Makefile
+--- /home/proj0-base/Makefile	2021-04-16 23:59:41.481675712 +0800
++++ ./Makefile	2021-04-20 22:51:02.000000000 +0800
+@@ -166,6 +166,8 @@
+ 	_sh\
+ 	_wc\
+ 	_zombie\
++	_p30\
++	_shutdown\
+ 
+ fs.img: mkfs $(UPROGS)
+ 	./mkfs fs.img $(UPROGS)
+diff -uNr /home/proj0-base/p30.c ./p30.c
+--- /home/proj0-base/p30.c	1970-01-01 08:00:00.000000000 +0800
++++ ./p30.c	2021-04-21 16:43:06.000000000 +0800
+@@ -0,0 +1,14 @@
++#include "types.h"
++#include "stat.h"
++#include "user.h"
++
++int main(int argc,char* argv[]){
++	printf(1,"OS Lab 161840230: ");
++	if(argc > 1){
++		for(int i = 1; i < argc;++i){
++			printf(1,"%s ",argv[i]);
++		}
++	}
++	printf(1,"\n");
++	exit();
++}
+diff -uNr /home/proj0-base/proc.c ./proc.c
+--- /home/proj0-base/proc.c	2021-04-16 23:59:41.481675712 +0800
++++ ./proc.c	2021-04-20 23:12:57.000000000 +0800
+@@ -88,7 +88,8 @@
+ found:
+   p->state = EMBRYO;
+   p->pid = nextpid++;
+-
++  p->priority = 10;
++  
+   release(&ptable.lock);
+ 
+   // Allocate kernel stack.
+@@ -532,3 +533,10 @@
+     cprintf("\n");
+   }
+ }
++
++
++int
++sdown(void){
++  outw(0x604,0x2000);
++  return 22;
++}
+diff -uNr /home/proj0-base/proc.h ./proc.h
+--- /home/proj0-base/proc.h	2021-04-16 23:59:41.481675712 +0800
++++ ./proc.h	2021-04-20 22:20:06.000000000 +0800
+@@ -49,6 +49,7 @@
+   struct file *ofile[NOFILE];  // Open files
+   struct inode *cwd;           // Current directory
+   char name[16];               // Process name (debugging)
++  int priority;                // (0-20)The priority of a process
+ };
+ 
+ // Process memory is laid out contiguously, low addresses first:
+diff -uNr /home/proj0-base/shutdown.c ./shutdown.c
+--- /home/proj0-base/shutdown.c	1970-01-01 08:00:00.000000000 +0800
++++ ./shutdown.c	2021-04-20 23:13:09.000000000 +0800
+@@ -0,0 +1,8 @@
++#include "types.h"
++#include "stat.h"
++#include "user.h"
++
++int main(int argc,char* argv[]){
++	sdown();
++	return 0;
++}
+diff -uNr /home/proj0-base/syscall.c ./syscall.c
+--- /home/proj0-base/syscall.c	2021-04-16 23:59:41.481675712 +0800
++++ ./syscall.c	2021-04-20 23:12:35.000000000 +0800
+@@ -103,6 +103,7 @@
+ extern int sys_wait(void);
+ extern int sys_write(void);
+ extern int sys_uptime(void);
++extern int sys_sdown(void);
+ 
+ static int (*syscalls[])(void) = {
+ [SYS_fork]    sys_fork,
+@@ -126,6 +127,7 @@
+ [SYS_link]    sys_link,
+ [SYS_mkdir]   sys_mkdir,
+ [SYS_close]   sys_close,
++[SYS_sdown]   sys_sdown,
+ };
+ 
+ void
+diff -uNr /home/proj0-base/syscall.h ./syscall.h
+--- /home/proj0-base/syscall.h	2021-04-16 23:59:41.481675712 +0800
++++ ./syscall.h	2021-04-20 23:10:46.000000000 +0800
+@@ -1,22 +1,23 @@
+ // System call numbers
+-#define SYS_fork    1
+-#define SYS_exit    2
+-#define SYS_wait    3
+-#define SYS_pipe    4
+-#define SYS_read    5
+-#define SYS_kill    6
+-#define SYS_exec    7
+-#define SYS_fstat   8
+-#define SYS_chdir   9
+-#define SYS_dup    10
+-#define SYS_getpid 11
+-#define SYS_sbrk   12
+-#define SYS_sleep  13
+-#define SYS_uptime 14
+-#define SYS_open   15
+-#define SYS_write  16
+-#define SYS_mknod  17
+-#define SYS_unlink 18
+-#define SYS_link   19
+-#define SYS_mkdir  20
+-#define SYS_close  21
++#define SYS_fork        1
++#define SYS_exit        2
++#define SYS_wait        3
++#define SYS_pipe        4
++#define SYS_read        5
++#define SYS_kill        6
++#define SYS_exec        7
++#define SYS_fstat       8
++#define SYS_chdir       9
++#define SYS_dup         10
++#define SYS_getpid      11
++#define SYS_sbrk        12
++#define SYS_sleep       13
++#define SYS_uptime      14
++#define SYS_open        15
++#define SYS_write       16
++#define SYS_mknod       17
++#define SYS_unlink      18
++#define SYS_link        19
++#define SYS_mkdir       20
++#define SYS_close       21
++#define SYS_sdown       22
+diff -uNr /home/proj0-base/sysproc.c ./sysproc.c
+--- /home/proj0-base/sysproc.c	2021-04-16 23:59:41.481675712 +0800
++++ ./sysproc.c	2021-04-20 23:12:02.000000000 +0800
+@@ -89,3 +89,10 @@
+   release(&tickslock);
+   return xticks;
+ }
++
++
++int
++sys_sdown(void)
++{
++  return sdown();
++}
+\ No newline at end of file
+diff -uNr /home/proj0-base/user.h ./user.h
+--- /home/proj0-base/user.h	2021-04-16 23:59:41.481675712 +0800
++++ ./user.h	2021-04-20 23:11:00.000000000 +0800
+@@ -23,6 +23,7 @@
+ char* sbrk(int);
+ int sleep(int);
+ int uptime(void);
++int sdown(void);
+ 
+ // ulib.c
+ int stat(char*, struct stat*);
+diff -uNr /home/proj0-base/usys.S ./usys.S
+--- /home/proj0-base/usys.S	2021-04-16 23:59:41.481675712 +0800
++++ ./usys.S	2021-04-20 23:11:07.000000000 +0800
+@@ -29,3 +29,4 @@
+ SYSCALL(sbrk)
+ SYSCALL(sleep)
+ SYSCALL(uptime)
++SYSCALL(sdown);
+\ No newline at end of file
