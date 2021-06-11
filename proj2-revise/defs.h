@@ -120,6 +120,12 @@ void            userinit(void);
 int             wait(void);
 void            wakeup(void*);
 void            yield(void);
+int 		    clone(void* (*)(void*), void *stack, void *arg);
+int 		    join(int, void **ret_p, void **stack);
+int             thread_exit(void *ret);
+void            sched_return(void);
+int             set_priority(int, int);
+int             enable_sched_display(int);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

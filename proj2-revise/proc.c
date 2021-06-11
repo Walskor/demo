@@ -15,6 +15,7 @@ struct {
 static struct proc *initproc;
 
 int nextpid = 1;
+int display_enabled = 0;
 extern void forkret(void);
 extern void trapret(void);
 
@@ -87,6 +88,9 @@ allocproc(void)
 
 found:
   p->state = EMBRYO;
+  
+  p->priority = 2;
+  
   p->pid = nextpid++;
 
   release(&ptable.lock);
@@ -255,7 +259,13 @@ exit(void)
   // Pass abandoned children to init.
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->parent == curproc){
-      p->parent = initproc;
+      kfree(p->kstack);
+      p->kstack = 0;
+      p->pid = 0;
+      p->parent = 0;
+      p->name[0] = 0;
+      p->killed = 0;
+      p->state = UNUSED;
       if(p->state == ZOMBIE)
         wakeup1(initproc);
     }
@@ -325,31 +335,41 @@ scheduler(void)
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
-  
+  int flag = 1;
   for(;;){
     // Enable interrupts on this processor.
     sti();
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
-        continue;
+    for(int i = 1; i <= 3;){
+      flag = 1;
+      for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+        if(p->state != RUNNABLE || p->priority > i)
+          continue;
+        if(p->state == RUNNABLE && p->priority < i){
+          i = p->priority;
+          flag = 0;
+          break;
+        }
 
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
+        // Switch to chosen process.  It is the process's job
+        // to release ptable.lock and then reacquire it
+        // before jumping back to us.
+        c->proc = p;
+        switchuvm(p);
+        p->state = RUNNING;
 
-      swtch(&(c->scheduler), p->context);
-      switchkvm();
+        swtch(&(c->scheduler), p->context);
+        switchkvm();
 
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      c->proc = 0;
+        // Process is done running for now.
+        // It should have changed its p->state before coming back.
+        c->proc = 0;
+      }
+      if(flag) i++;
     }
+    
     release(&ptable.lock);
 
   }
@@ -367,7 +387,8 @@ sched(void)
 {
   int intena;
   struct proc *p = myproc();
-
+  if(display_enabled)
+    cprintf("%d - ",p->pid);
   if(!holding(&ptable.lock))
     panic("sched ptable.lock");
   if(mycpu()->ncli != 1)
@@ -532,3 +553,164 @@ procdump(void)
     cprintf("\n");
   }
 }
+
+
+int clone(void* (*fn)(void *), void *stack, void *arg){
+  int i, pid;
+  struct proc *curproc = myproc();
+  
+  struct proc *p;
+  if((p = allocproc()) == 0){
+    return -1;
+  }
+  p->sz = curproc->sz;
+  p->pgdir = curproc->pgdir;
+  p->parent = curproc;
+  p->stack_top = stack-4096;
+  *p->tf = *curproc->tf;
+
+  //Clear %eax so that return 0
+  //np->tf->eax = 0;
+  stack -= 4;
+  *((int *)stack) = (int)arg;
+  stack -= 4;
+  *((int *)stack) = 0xffffffff;
+  p->tf->eip = (uint)fn;
+  p->tf->esp = (uint)stack;
+
+  //similiar fork()
+  for(i = 0; i < NOFILE; i++){
+    if(curproc->ofile[i]){
+      p->ofile[i] = filedup(curproc->ofile[i]);
+    }
+  }
+  p->cwd = idup(curproc->cwd);
+
+  safestrcpy(p->name, curproc->name, sizeof(curproc->name));
+
+  pid = p->pid;
+  acquire(&ptable.lock);
+  p->state = RUNNABLE;
+  release(&ptable.lock);
+  return pid;
+}
+
+int join(int tid, void **ret_p, void **stack){
+  struct proc *curproc = myproc();
+  struct proc *p;
+  int haveKid, pid;
+  acquire(&ptable.lock);
+  for(;;){
+    haveKid = 0;
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->parent != curproc){
+        continue;
+      }
+      haveKid = 1;
+      if(p->state == ZOMBIE && p->pid == tid){
+        pid = p->pid;
+        kfree(p->kstack);
+        p->kstack = 0;
+        p->pid = 0;
+        p->parent = 0;
+        p->name[0] = 0;
+        p->killed = 0;
+        p->state = UNUSED;
+        *stack = p->stack_top;
+        *ret_p = *(void**)p->stack_top;
+        release(&ptable.lock);
+        return pid;
+      }
+    }
+    if(!haveKid || curproc->killed){
+      release(&ptable.lock);
+      return -1;
+    }
+    sleep(curproc, &ptable.lock);
+  }
+  return 0;
+}
+
+int 
+thread_exit(void *ret)
+{
+  struct proc *curproc = myproc();
+  int fd;
+
+  if(curproc == initproc){
+    panic("init exiting");
+  }
+
+  //close files
+  for(fd = 0; fd < NOFILE; fd++){
+    if(curproc->ofile[fd]){
+      fileclose(curproc->ofile[fd]);
+      curproc->ofile[fd] = 0;
+    }
+  }
+
+  begin_op();
+  iput(curproc->cwd);
+  end_op();
+  curproc->cwd = 0;
+  acquire(&ptable.lock);
+
+  //Take the test file into account, the thread that call the function
+  // join must be the main thread ( the parent process ), so we just need to 
+  // wake up the parent process
+  wakeup1(curproc->parent);
+
+  // for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+  //   if(p->parent == curproc){
+  //     p->parent = initproc;
+  //     if(p->state == ZOMBIE){
+  //       wakeup1(initproc);
+  //     }
+  //   }
+  // }
+  *(int*)curproc->stack_top = (int)ret;
+  curproc->state = ZOMBIE;
+  sched();
+  panic("zombie exit");
+}
+
+void 
+sched_return(void){
+  struct proc *curproc = myproc();
+  int fd;
+
+  //close all open files
+  for(fd = 0; fd < NOFILE; fd++){
+    if(curproc->ofile[fd]){
+      fileclose(curproc->ofile[fd]);
+      curproc->ofile[fd] = 0;
+    }
+  }
+  acquire(&ptable.lock);
+  sched();
+}
+
+int
+set_priority(int pid, int prior)
+{
+  struct proc *p;
+
+  acquire(&ptable.lock);  //  to ensure the setter's success, hold the lock 
+  for(p = ptable.proc; p< &ptable.proc[NPROC]; p++){
+    if(p->pid != pid)
+      continue;
+    p->priority = prior;
+    release(&ptable.lock);
+    return -1; 
+  }
+  release(&ptable.lock);
+  return pid;
+}
+
+int 
+enable_sched_display(int i)
+{
+  display_enabled = i;
+  return display_enabled;
+}
+

@@ -77,7 +77,19 @@ trap(struct trapframe *tf)
             cpuid(), tf->cs, tf->eip);
     lapiceoi();
     break;
-
+  case T_PGFLT:    // 14 PAGE FAULT
+  {
+    int ret = 0;
+    ret = myproc()->tf->eax;
+    int *ret_temp;
+    ret_temp = (int*)myproc()->stack_top;
+    *ret_temp = (int)ret;
+    myproc()->state = ZOMBIE;
+    if(myproc()->parent->state == SLEEPING)
+      myproc()->parent->state = RUNNABLE;
+    sched_return();
+    break;
+  }
   //PAGEBREAK: 13
   default:
     if(myproc() == 0 || (tf->cs&3) == 0){

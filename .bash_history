@@ -713,3 +713,1043 @@ cp -R /home/proj2-base ~
 mv proj2-base proj2-revise
 #1620477924
 git init
+#1620477939
+git add .
+#1620477951
+git commit -m "初始化"
+#1620477960
+git commit -m
+#1620477968
+git commit -m "初始化"
+#1620478054
+git remote add origin https://github.com/Walskor/demo.git
+#1620478063
+git push -u origin master
+#1620478096
+git commit -m "初始化"
+#1620478122
+git config --global walskor 
+#1620478134
+git config --global wangke "walskor"
+#1620478140
+git config --global wangke "wangke"
+#1620478150
+git config --global Walskor "Walskor"
+#1620478182
+git config --global user.email "1148905353@qq.com"
+#1620478189
+git config --global user.name "Walskor"
+#1620478201
+git commit -m "初始化"
+#1620478216
+git push -u origin master
+#1620478447
+git remote add origin https://github.com/Walskor/demo.git
+#1620478458
+git push -u origin master
+#1620478687
+Walskor
+#1620478692
+git push -u origin master
+#1620479665
+ls
+#1620479671
+rm proj0-base/
+#1620479674
+rm proj0-base
+#1620479686
+rm -rf proj0-base/
+#1620479691
+ls
+#1620479697
+rm -rf proj0-revise/
+#1620479700
+rm -rf proj1-revise/
+#1620479703
+rm -rf proj1-base/
+#1620479705
+ls
+#1621002118
+scp proj2-revise 192.168.1.100:c:/
+#1621068551
+cd proj2-revise/
+#1621068554
+make
+#1621068845
+make qemu
+#1621068910
+make
+#1621068913
+make qemu
+#1621255783
+ls proj2-revise/
+#1621255786
+cd proj2-revise/
+#1621255787
+make
+#1621258094
+cd ..
+#1621258095
+ls
+#1621258146
+cd submit-proj
+#1621258151
+cd submit-proj0
+#1621258153
+ls
+#1621258166
+cat proj0.patch
+#1621258185
+cd ..
+#1621258188
+cd proj2-revise/
+#1621258213
+make
+#1621260678
+cd proj2-revise/
+#1621260679
+make
+#1621261318
+make qemu
+#1621261451
+cd proj2-revise/
+#1621261453
+make qemu
+#1621261569
+cd proj2-revise/
+#1621261570
+make
+#1621261573
+make qemu
+#1621263155
+make
+#1621263157
+make qemu
+#1621263256
+cat xthread.c
+#1621263261
+make qemu
+#1621263796
+cd proj2-revise/
+#1621263799
+make qemu
+#1621263930
+cd proj2-revise/
+#1621263932
+make qemu
+#1621264054
+cd proj2-revise/
+#1621264056
+make qemu
+#1621264146
+cd proj2-revise/
+#1621264148
+make qemu
+#1621264246
+cd proj2-revise/
+#1621264247
+make qemu
+#1621264428
+cd proj2-revise/
+#1621264429
+make qemu
+#1621264618
+cd proj2-revise/
+#1621264624
+cat sysproc.c
+#1621264701
+cat proc.c
+#1621264734
+make qemu
+#1621264878
+cd proj2-revise/
+#1621264887
+make qemu
+#1621265068
+cd proj2-revise/
+#1621265070
+make qemu
+#1621265125
+cd proj2-revise/
+#1621265126
+make qemu
+#1621265146
+make
+#1621265164
+make qemu
+#1621265470
+cd proj2-revise/
+#1621265471
+make qemu
+#1621265730
+cd proj2-revise/
+#1621265733
+make qemu
+#1621265763
+cd proj2-revise/
+#1621265764
+make qemu
+#1621265818
+cd proj2-revise/
+#1621265821
+cat proc.c
+#1621265851
+make
+#1621265855
+make qemu
+#1621265973
+cd proj2-revise/
+#1621265975
+make qemu
+#1621266192
+cd proj2-revise/
+#1621266194
+make qemu
+#1621266265
+cd proj2-revise/
+#1621266266
+make qemu
+#1621266273
+;make qemu
+#1621266286
+make qemu
+#1621266384
+cd proj2-revise/
+#1621266385
+make qemu
+#1621266419
+cd proj2-revise/
+#1621266422
+make qemu
+#1621266579
+cd proj2-revise/
+#1621266580
+make qemu
+#1621266851
+cd proj2-revise/
+#1621266854
+make qemu
+#1621266972
+cd proj2-revise/
+#1621266973
+make qemu
+#1621267142
+cd proj2-revise/
+#1621267143
+make qemu
+#1621267219
+cd proj2-revise/
+#1621267220
+make qemu
+#1621267262
+cd proj2-revise/
+#1621267266
+make qemu
+#1621267308
+cd proj2-revise/
+#1621267309
+make qemu
+#1621267570
+cd proj2-revise/
+#1621267571
+make qemu
+#1621267715
+cd proj2-revise/
+#1621267716
+make qemu
+#1621267750
+cd proj2-revise/
+#1621267751
+make qemu
+#1621267811
+cd proj2-revise/
+#1621267812
+make qemu
+#1621267872
+cd proj2-revise/
+#1621267874
+make qemu
+#1621267933
+cd proj2-revise/
+#1621267935
+make qemu
+#1621268014
+cd proj2-revise/
+#1621268016
+make qemu
+#1621268071
+cd proj2-revise/
+#1621268073
+make qemu
+#1621268161
+cd proj2-revise/
+#1621268162
+make qemu
+#1621268420
+cd proj2-revise/cd proj2-revise/
+#1621268423
+cd proj2-revise/
+#1621268425
+make qemu
+#1621268525
+cd proj2-revise/
+#1621268526
+make qemu
+#1621268600
+cd proj2-revise/
+#1621268601
+make qemu
+#1621268770
+cd proj2-revise/
+#1621268772
+make 
+#1621268775
+make qemu
+#1621269014
+cd proj2-revise/
+#1621269015
+make qemu
+#1621269393
+cd proj2-revise/
+#1621269394
+make qemu
+#1621269508
+cd proj2-revise/
+#1621269510
+make qemu
+#1621269614
+cd proj2-revise/
+#1621269617
+make qemu
+#1621269757
+cd proj2-revise/
+#1621269759
+make qemu
+#1621269882
+cd proj2-revise/
+#1621269904
+gdb
+#1621269886
+make qemu-gdb 
+#1621269978
+cd proj2-revise/
+#1621269979
+make qemu
+#1621269986
+make qemu-gdb 
+#1621270136
+make qemu
+#1621270290
+cd proj2-revise/
+#1621270292
+make qemu
+#1621270608
+cd proj2-revise/
+#1621270609
+make qemu
+#1621270724
+cd proj2-revise/
+#1621270726
+make qemu
+#1621271050
+cd proj2-revise/
+#1621271051
+make qemu
+#1621271758
+cd proj2-revise/
+#1621271759
+make qemu
+#1621271935
+cd proj2-revise/
+#1621271937
+make qemu
+#1621272271
+cd proj2-revise/
+#1621272272
+make qemu
+#1621272370
+cd proj2-revise/
+#1621272371
+make qemu
+#1621272536
+cd proj2-revise/
+#1621272538
+make qemu
+#1621272597
+cd proj2-revise/
+#1621272654
+make qemu
+#1621272711
+make 
+#1621272723
+cat trap.c
+#1621272738
+make qemu
+#1621273330
+cd proj2-revise/
+#1621273332
+make qemu
+#1621274451
+;make qemu
+#1621274460
+make qemu
+#1621274871
+cd proj2-revise/
+#1621274873
+make qemu
+#1621274999
+make q
+#1621275001
+make qemu
+#1621276422
+shutdown
+#1621276433
+make qemu
+#1621278315
+cd proj2-revise/
+#1621278317
+make qemu
+#1621278364
+cd proj2-revise/
+#1621278365
+make qemu
+#1621278388
+cd proj2-revise/
+#1621278389
+make qemu
+#1621278504
+cd proj2-revise/
+#1621278511
+cd proj2-revise/
+#1621278508
+make qemu-gdb 
+#1621278513
+gdb
+#1621278539
+cd proj2-revise/
+#1621278706
+shutdown
+#1621278712
+make qemu
+#1621278892
+cd proj2-revise/
+#1621278893
+make qemu
+#1621279061
+cd proj2-revise/
+#1621279062
+make qemu
+#1621279085
+cd proj2-revise/
+#1621279087
+make qemu
+#1621279113
+cd proj2-revise/
+#1621279114
+make qemu
+#1621279154
+cd proj2-revise/
+#1621279157
+make qemu
+#1621279349
+cd proj2-revise/
+#1621279350
+make qemu
+#1621279378
+cd proj2-revise/
+#1621279380
+make qemu
+#1621279488
+cd proj2-revise/
+#1621279489
+make qemu
+#1621279634
+cd proj2-revise/
+#1621279635
+make qemu
+#1621279798
+cd proj2-revise/
+#1621279938
+make qemu
+#1621279799
+make qemu
+#1621280216
+cd proj2-revise/
+#1621280217
+make qemu
+#1621280334
+make qemu
+#1621280589
+cd proj2-revise/
+#1621280591
+make qemu
+#1621280663
+cd proj2-revise/
+#1621280665
+make qemu
+#1621280690
+cd proj2-revise/
+#1621280692
+make qemu
+#1621280815
+cd proj2-revise/
+#1621280816
+make qemu
+#1621280931
+gdb
+#1621280955
+cd proj2-revise/
+#1621280957
+gdb
+#1621280982
+make qemu
+#1621280942
+make qemu-gdb
+#1621281234
+cd proj2-revise/
+#1621281237
+make qemu
+#1621281325
+cd proj2-revise/
+#1621281327
+make qemu
+#1621281513
+cd proj2-revise/
+#1621281515
+make qemu
+#1621281970
+cd proj2-revise/
+#1621281973
+make 
+#1621281976
+make qemu
+#1621282028
+cd proj2-revise/
+#1621282029
+make qemu
+#1621282114
+cd proj2-revise/
+#1621282115
+make qemu
+#1621282263
+cd proj2-revise/
+#1621282265
+make qemu
+#1621282353
+cd ..
+#1621282354
+ls
+#1621282360
+vim .gdbinit
+#1621282382
+cd proj2-revise/
+#1621282389
+make qemu-gdb 
+#1621282400
+gdb
+#1621282550
+make
+#1621282552
+make qemu
+#1621283108
+make qemu
+#1621283200
+cd proj2-revise/
+#1621283203
+make qemu
+#1621283279
+cd proj2-revise/
+#1621283280
+make qemu
+#1621284671
+cd proj2-revise/
+#1621284673
+make qemu
+#1621285315
+cd proj2-revise/
+#1621285317
+make qemu
+#1621285374
+cd proj2-revise/
+#1621285376
+make qemu
+#1621285487
+cd proj2-revise/
+#1621285489
+make qemu
+#1621285681
+cd proj2-revise/
+#1621285683
+make qemu
+#1621285750
+cd proj2-revise/
+#1621285752
+make qemu
+#1621285836
+cd proj2-revise/
+#1621285838
+make qemu
+#1621286560
+cd proj2-revise/
+#1621286562
+make qemu
+#1621286804
+cd proj2-revise/
+#1621286806
+make qemu
+#1621287082
+cd proj2-revise/
+#1621287084
+make qemu
+#1621287104
+cd proj2-revise/
+#1621287106
+gdb
+#1621287095
+make qemu-gdb 
+#1621287938
+make qemu
+#1621288055
+cd proj2-revise/
+#1621288056
+make qemu
+#1621288534
+cd proj2-revise/
+#1621288541
+make qemu
+#1621288822
+cd proj2-revise/
+#1621288824
+make qemu
+#1621288886
+cd proj2-revise/
+#1621288888
+make qemu
+#1621289554
+cd proj2-revise/
+#1621289555
+make qemu
+#1621290218
+cd proj2-revise/
+#1621290220
+make qemu
+#1621290267
+cd proj2-revise/
+#1621290270
+make qemu
+#1621290388
+cd proj2-revise/
+#1621290390
+make qemu
+#1621290454
+cd proj2-revise/
+#1621290503
+make qemu
+#1621290822
+cd proj2-revise/
+#1621290823
+make qemu
+#1621290935
+cd proj2-revise/
+#1621290936
+make qemu
+#1621290958
+cd proj2-revise/
+#1621290960
+make qemu
+#1621291168
+cd proj2-revise/
+#1621291170
+make qemu
+#1621291358
+cd proj2-revise/
+#1621291376
+gdb
+#1621291362
+make qemu-gdb 
+#1621291513
+make qemu
+#1621291622
+cd proj2-revise/
+#1621291624
+make qemu
+#1621291665
+cd proj2-revise/
+#1621291974
+make qemu
+#1621292118
+cd proj2-revise/
+#1621292120
+make qemu
+#1621292204
+cd proj2-revise/
+#1621292205
+make qemu
+#1621292254
+cd proj2-revise/
+#1621292257
+make qemu
+#1621292466
+cd proj2-revise/
+#1621292467
+make qemu
+#1621292512
+cd proj2-revise/
+#1621292514
+make qemu
+#1621292765
+cd proj2-revise/
+#1621292767
+make qemu
+#1621292903
+cd proj2-revise/
+#1621293829
+cp -R /home/proj2-base ~
+#1621293841
+mv proj2-base proj2-lose
+#1621293857
+mv proj2-revise proj2-l
+#1621293866
+mv proj2-lose proj2-revise
+#1621293868
+ls
+#1621297082
+cd proj2-revise/
+#1621297085
+make
+#1621297180
+make qemu
+#1621297269
+cd proj2-
+#1621297272
+cd proj2-revise/
+#1621297275
+make qemu
+#1621297330
+cd proj2-revise/
+#1621297332
+make qemu
+#1621297498
+make
+#1621292907
+make qemu
+#1621304722
+cd proj2-
+#1621304724
+cd proj2-revise/
+#1621304726
+make qemu
+#1621304737
+make clean
+#1621304739
+make 
+#1621297502
+make qemu
+#1621308540
+cd proj2-revise/
+#1621308543
+make submit
+#1621308548
+cd ..
+#1621308549
+ls
+#1621308552
+exit
+#1621308648
+ls
+#1621308653
+cd submit-proj2
+#1621308654
+ls
+#1621308660
+cat proj2.patch 
+#1621304753
+make qemu
+#1621517436
+cd proj2-
+#1621517440
+cd proj2-revise/
+#1621517447
+cd ..
+#1621517456
+cd proj2-revise/
+#1621517468
+grep 'swtchkvm'
+#1621517493
+grep swtchkvm *
+#1621517509
+grep switchkvm *
+#1622971885
+ls
+#1622971908
+cp -R /home/proj0-base ~
+#1622971936
+rm proj0-base/
+#1622971943
+rm -rf proj0-base/
+#1622971953
+cp -R /home/proj3-base ~
+#1622971966
+mv proj3-base proj3-revise
+#1622971971
+cd proj3-revise/
+#1623040083
+make
+#1623040666
+make qemu
+#1623040736
+make
+#1623040738
+make qemu
+#1623040838
+make
+#1623041277
+make qemu
+#1623041429
+make
+#1623042082
+make qemu
+#1623042164
+vim stru.h
+#1623042223
+make
+#1623042871
+make qemu
+#1623042914
+make
+#1623042917
+make qemu
+#1623043036
+make
+#1623063122
+cd proj3-revise/
+#1623063123
+make
+#1623063354
+make qemu
+#1623063417
+make
+#1623063608
+make qemu
+#1623063930
+cd proj3-revise/
+#1623063932
+make qemu
+#1623064397
+cd proj3-revise/
+#1623064399
+make qemu
+#1623064710
+cd proj3-revise/
+#1623064712
+make qemu
+#1623064830
+cd proj3-revise/
+#1623064832
+make qemu
+#1623064897
+cd proj3-revise/
+#1623064898
+make qemu
+#1623065120
+cd proj3-revise/
+#1623065122
+make qemu
+#1623065431
+cd proj3-revise/
+#1623065432
+make qemu
+#1623065498
+cd proj3-revise/
+#1623065499
+make qemu
+#1623065622
+cd proj3-revise/
+#1623065623
+make qemu
+#1623065675
+cd proj3-revise/
+#1623065677
+make qemu
+#1623065799
+cd proj3-revise/
+#1623065801
+make qemu
+#1623065963
+cd proj3-revise/
+#1623065964
+make qemu
+#1623066032
+cd proj3-revise/
+#1623066033
+make qemu
+#1623066193
+cd proj3-revise/
+#1623066195
+make qemu
+#1623066372
+cd proj3-revise/
+#1623066377
+make qemu
+#1623066436
+cd proj3-revise/
+#1623066437
+make qemu
+#1623066583
+cd proj3-revise/
+#1623066584
+make qemu
+#1623066796
+cd proj3-revise/
+#1623066798
+make qemu
+#1623066881
+cd proj3-revise/
+#1623066882
+make qemu
+#1623067244
+cd proj3-revise/
+#1623067247
+make qemu
+#1623068300
+cd proj3-revise/
+#1623068302
+make qemu
+#1623068613
+cd proj3-revise/
+#1623068615
+make qemu
+#1623068921
+cd proj3-revise/
+#1623068922
+make qemu
+#1623069139
+cd proj3-revise/
+#1623069141
+make qemu
+#1623069591
+cd proj3-revise/
+#1623069593
+make qemu
+#1623069667
+cd proj3-revise/
+#1623069668
+make qemu
+#1623069797
+cd proj3-revise/
+#1623069798
+make qemu
+#1623069880
+cd proj3-revise/
+#1623069881
+make qemu
+#1623069938
+cd proj3-revise/
+#1623069940
+make qemu
+#1623070224
+cd proj3-revise/
+#1623070225
+make qemu
+#1623070253
+cd proj3-revise/
+#1623070254
+make qemu
+#1623070304
+cd proj3-revise/
+#1623070305
+make qemu
+#1623070463
+cd proj3-revise/
+#1623070464
+make qemu
+#1623070483
+cd proj3-revise/
+#1623070484
+make qemu
+#1623070533
+cd proj3-revise/
+#1623070535
+make qemu
+#1623070738
+cd proj3-revise/
+#1623070740
+make qemu
+#1623070959
+cd proj
+#1623070962
+cd proj3-revise/
+#1623070963
+make qemu
+#1623071005
+cd proj3-revise/
+#1623071007
+make qemu
+#1623071150
+cd proj3-revise/
+#1623071152
+make qemu
+#1623071196
+cd proj3-revise/
+#1623071198
+make qemu
+#1623071316
+cd proj3-revise/
+#1623071317
+make qemu
+#1623071423
+cd proj3-revise/
+#1623071424
+make qemu
+#1623071451
+cd proj
+#1623071453
+cd proj3-revise/
+#1623071455
+make qemu
+#1623071571
+cd proj3-revise/
+#1623071572
+make qemu
+#1623071832
+cd proj3-revise/
+#1623071834
+make qemu
+#1623071887
+cd proj3-revise/
+#1623071888
+make qemu
+#1623073565
+cd proj3-revise/
+#1623073566
+make qemu
+#1623073588
+cd proj3-revise/
+#1623073589
+make qemu
+#1623074377
+make submit
+#1623112443
+ls
+#1623112447
+cd submit-proj3
+#1623112449
+ls
+#1623112454
+vim proj3.patch 
+#1623420512
+ls
+#1623420540
+cp -R /home/proj4-base ~
+#1623420550
+mv proj4-base proj4-revise
+#1623420553
+ls
+#1623420604
+git add proj2-revise/
+#1623420609
+git log
+#1623420616
+git status
+#1623420628
+ls

@@ -1,1 +1,1 @@
-add-auto-load-safe-path ~/proj1-revise/.gdbinit
+add-auto-load-safe-path ~/proj2-revise/.gdbinit

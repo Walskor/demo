@@ -1,0 +1,788 @@
+diff -uNr /home/proj3-base/defs.h ./defs.h
+--- /home/proj3-base/defs.h	2021-05-20 14:57:20.340533851 +0800
++++ ./defs.h	2021-06-07 12:13:26.000000000 +0800
+@@ -120,6 +120,14 @@
+ int             wait(void);
+ void            wakeup(void*);
+ void            yield(void);
++int             alloc_sem(int);
++int             wait_sem(int);
++int             signal_sem(int);
++int             dealloc_sem(int);
++int             msg_send(int, int, int, int);
++int             msg_receive(int*, int*, int*);
++void            initMsg(void);
++int             getProcNum(int);
+ 
+ // swtch.S
+ void            swtch(struct context**, struct context*);
+diff -uNr /home/proj3-base/main.c ./main.c
+--- /home/proj3-base/main.c	2021-05-20 14:57:20.340533851 +0800
++++ ./main.c	2021-06-07 12:17:14.000000000 +0800
+@@ -34,6 +34,7 @@
+   startothers();   // start other processors
+   kinit2(P2V(4*1024*1024), P2V(PHYSTOP)); // must come after startothers()
+   userinit();      // first user process
++  initMsg();       // initiate the msg lock
+   mpmain();        // finish this processor's setup
+ }
+ 
+diff -uNr /home/proj3-base/Makefile ./Makefile
+--- /home/proj3-base/Makefile	2021-05-20 14:57:20.340533851 +0800
++++ ./Makefile	2021-06-06 23:51:56.000000000 +0800
+@@ -167,6 +167,8 @@
+ 	_wc\
+ 	_zombie\
+ 	_shutdown\
++	_msgtest\
++	_semtest\
+ 
+ fs.img: mkfs  $(UPROGS)
+ 	./mkfs fs.img  $(UPROGS)
+diff -uNr /home/proj3-base/msgtest.c ./msgtest.c
+--- /home/proj3-base/msgtest.c	2021-05-20 14:57:20.340533851 +0800
++++ ./msgtest.c	2021-06-07 21:46:18.000000000 +0800
+@@ -33,8 +33,11 @@
+ 			child[i%20]=j;			
+ 		}
+ 		if(i%20==0){
+-			for(j=0;j<20;j++){//parent sending messages
+-				msg_send(child[j%20],child[j%20]+1,child[j%20]+2,child[j%20]+3);					
++			// for(j=0;j<20;j++){
++			// 	printf(1,"-%d-",child[j%20]);	
++			// }
++			for(j=0;j<20;j++){//parent sending messages	
++				msg_send(child[j%20],child[j%20]+1,child[j%20]+2,child[j%20]+3);			
+ 			}
+ 			for(j=0;j<20;j++)
+ 				wait();
+@@ -91,6 +94,6 @@
+ 		}while(a!=-1);		
+ 	}
+ 	wait();
+-
++	// printf(1,"\n");
+ 	exit();
+ }
+\ No newline at end of file
+diff -uNr /home/proj3-base/proc.c ./proc.c
+--- /home/proj3-base/proc.c	2021-05-20 14:57:20.340533851 +0800
++++ ./proc.c	2021-06-07 21:43:23.000000000 +0800
+@@ -4,14 +4,50 @@
+ #include "memlayout.h"
+ #include "mmu.h"
+ #include "x86.h"
++#include "stat.h"
++
+ #include "proc.h"
+ #include "spinlock.h"
+-
++#define SEM_SIZE 100
++#define NULL 0
+ struct {
+   struct spinlock lock;
+   struct proc proc[NPROC];
+ } ptable;
+ 
++//semaphore
++struct semaphore{
++  struct spinlock lock;
++  int value;             
++  int used;        
++  struct proc_list *procList;
++  int length;
++};
++
++struct proc_list{
++  int id;
++  int used;
++  struct proc *proc;
++  struct proc_list *next;
++};
++
++// Massage trans
++struct MSGstate{
++  int id;
++  int pid;
++  int used;
++  int positive;
++  int target;
++  int sid; //semaphore id
++  int data[3];
++  struct MSGstate *next;
++};
++
++struct semaphore semaphores[SEM_SIZE];
++struct spinlock semaphores_lock;
++struct spinlock PLlock;
++struct spinlock MSlock;
++
+ static struct proc *initproc;
+ 
+ int nextpid = 1;
+@@ -19,6 +55,60 @@
+ extern void trapret(void);
+ 
+ static void wakeup1(void *chan);
++void* malloc(uint);
++void free(void*);
++
++// void*
++// malloc(uint nbytes)
++// {
++//   Header *p, *prevp;
++//   uint nunits;
++
++//   nunits = (nbytes + sizeof(Header) - 1)/sizeof(Header) + 1;
++//   if((prevp = freep) == 0){
++//     base.s.ptr = freep = prevp = &base;
++//     base.s.size = 0;
++//   }
++//   for(p = prevp->s.ptr; ; prevp = p, p = p->s.ptr){
++//     if(p->s.size >= nunits){
++//       if(p->s.size == nunits)
++//         prevp->s.ptr = p->s.ptr;
++//       else {
++//         p->s.size -= nunits;
++//         p += p->s.size;
++//         p->s.size = nunits;
++//       }
++//       freep = prevp;
++//       return (void*)(p + 1);
++//     }
++//     if(p == freep)
++//       if((p = morecore(nunits)) == 0)
++//         return 0;
++//   }
++// }
++
++
++// void
++// free(void *ap)
++// {
++//   Header *bp, *p;
++
++//   bp = (Header*)ap - 1;
++//   for(p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
++//     if(p >= p->s.ptr && (bp > p || bp < p->s.ptr))
++//       break;
++//   if(bp + bp->s.size == p->s.ptr){
++//     bp->s.size += p->s.ptr->s.size;
++//     bp->s.ptr = p->s.ptr->s.ptr;
++//   } else
++//     bp->s.ptr = p->s.ptr;
++//   if(p + p->s.size == bp){
++//     p->s.size += bp->s.size;
++//     p->s.ptr = bp->s.ptr;
++//   } else
++//     p->s.ptr = bp;
++//   freep = p;
++// }
+ 
+ void
+ pinit(void)
+@@ -77,7 +167,6 @@
+   char *sp;
+ 
+   acquire(&ptable.lock);
+-
+   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+     if(p->state == UNUSED)
+       goto found;
+@@ -532,3 +621,364 @@
+     cprintf("\n");
+   }
+ }
++
++struct proc_list PL[1000];
++struct MSGstate MS[1000];
++
++struct proc_list *
++PLalloc(){
++  acquire(&PLlock);
++  int i;
++  for(i = 0 ; i < 1000; i++){
++    if(PL[i].used == 0){
++      goto found;
++    }
++  }
++  release(&PLlock);
++  return NULL;
++
++found:
++  PL[i].used = 1;
++  release(&PLlock);
++  return &PL[i];
++}
++
++struct MSGstate *
++MSalloc(){
++  acquire(&MSlock);
++  int i;
++  for(i = 0 ; i < 1000; i++){
++    if(MS[i].used == 0){
++      goto found;
++    }
++  }
++  release(&MSlock);
++  return NULL;
++
++found:
++  MS[i].used = 1;
++  release(&MSlock);
++  return &MS[i];
++}
++
++int
++PLfree(struct proc_list *pl){
++  acquire(&PLlock);
++  pl->used = 0;
++  release(&PLlock);
++  return 1;
++}
++
++int
++MSfree(struct MSGstate *ms){
++  acquire(&MSlock);
++  ms->used = 0;
++  release(&MSlock);
++  return 1;
++}
++
++int            
++alloc_sem(int v)
++{
++  if(v < 0) return -1;
++  int index;
++  acquire(&semaphores_lock);
++  for(index = 0; index < SEM_SIZE; index++){
++    if(semaphores[index].used == 0){
++      semaphores[index].used = 1;
++      semaphores[index].value = v;
++      semaphores[index].procList = NULL;
++      semaphores[index].length = 0;
++      initlock(&semaphores[index].lock,"sem");
++      release(&semaphores_lock);
++      return index;
++    }
++  }
++  release(&semaphores_lock);
++  return -1;
++}
++
++int             
++wait_sem(int i)
++{
++  if(i < 0 || i >= SEM_SIZE) return -1;
++  if(semaphores[i].used == 0) return -1;
++  acquire(&semaphores[i].lock);
++  semaphores[i].value--;
++  // cprintf("----------------------------%d value --  now value is %d\n", i,semaphores[i].value);
++  if(semaphores[i].value < 0){
++    struct proc_list *p = semaphores[i].procList;
++    // p = (struct proc_list *)Dmalloc(0);
++    if(semaphores[i].length == 0) {
++      semaphores[i].procList= PLalloc();
++      p = semaphores[i].procList;
++    }else{
++      while(p->next != NULL) p = p->next;
++      p->next = PLalloc();
++      p = p->next;
++    }
++    if(p == NULL) return -1;
++    semaphores[i].length += 1;
++    p->proc = myproc();
++    p->next = NULL;
++    // p = semaphores[i].procList;
++    // cprintf("---------------------\n---------------------now waiting : ");
++    // while(p != NULL) {
++    //   cprintf("-%d-",p->proc->pid);
++    //   p = p->next;
++    // }
++    // cprintf("    count is %d\n",semaphores[i].length);
++    sleep(myproc(), &semaphores[i].lock);
++  }
++  
++  release(&semaphores[i].lock);
++  return 1;
++}
++
++int             
++signal_sem(int i)
++{
++  if(i < 0 || i >= SEM_SIZE) return -1;
++  if(semaphores[i].used == 0) return -1;
++  acquire(&semaphores[i].lock);
++  semaphores[i].value++;
++  // cprintf("----------------------------%d value ++  now value is %d\n", i,semaphores[i].value);
++  if(semaphores[i].value <= 0){
++    wakeup(semaphores[i].procList->proc);
++    struct proc_list *p = semaphores[i].procList;
++    semaphores[i].procList = p->next;
++    PLfree(p);
++    semaphores[i].length -- ;
++    // p = semaphores[i].procList;
++    // cprintf("---------------------\n---------------------now waiting : ");
++    // while(p != NULL) {
++    //   cprintf("-%d-",p->proc->pid);
++    //   p = p->next;
++    // }
++    // cprintf("    count is %d\n",semaphores[i].length);
++  }
++  release(&semaphores[i].lock);
++  return 1;
++}
++
++int             
++dealloc_sem(int i)
++{
++  if(i < 0 || i >= SEM_SIZE) return -1;
++  if(semaphores[i].used == 0) return -1;
++  acquire(&semaphores[i].lock);
++  if(semaphores[i].used == 1){
++    semaphores[i].used = 0;
++    while(semaphores[i].procList != NULL)
++    {
++      kill(semaphores[i].procList->proc->pid);
++      struct proc_list *p = semaphores[i].procList;
++      semaphores[i].procList = p->next;
++      PLfree(p);
++    }
++  }
++  release(&semaphores[i].lock);
++  return 1;
++}
++
++struct MSGstate * Msend[NPROC];
++struct MSGstate * Mrecv[NPROC];
++struct spinlock Msg_lock;
++
++void initMsg(){
++  initlock(&Msg_lock,"msg_lock");
++  initlock(&semaphores_lock,"sem");
++  initlock(&PLlock,"proclist_lock");
++  for(int i = 0 ; i < 1000; i++){
++    PL[i].used = 0;
++    PL[i].id = i;
++    MS[i].id = i;
++    MS[i].used = 0;
++  }
++  initlock(&MSlock,"massage_lock");
++  for(int i = 0; i < NPROC; i++){
++      Msend[i] = NULL;
++      Mrecv[i] = NULL;
++  }
++  return;
++}
++
++// get the location in ptable by pid
++int
++getProcNum(int pidd)
++{
++  struct proc *p;
++
++  acquire(&ptable.lock);
++  int num = 0;
++  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++,num++){
++    if(p->pid == pidd){
++      release(&ptable.lock);
++      return num;
++    }
++  }
++  release(&ptable.lock);
++  return -1;
++}
++
++int       
++msg_send(int pid, int a, int b, int c){
++  int found = getProcNum(pid);
++  int semaphore;
++  if(found < 0) 
++    return -1;
++
++  acquire(&Msg_lock);
++  int now_pid = myproc()->pid;
++  int myNum = getProcNum(now_pid);
++  struct MSGstate *p = Mrecv[found];
++  // int flag = 1;
++  // cprintf("in %d sending is %d   \n",pid,Mrecv[found]);
++  for(; p != NULL ; p = p->next){  // if the target is waiting for receiving
++    // flag = 0;
++    if(p->positive == 1 && p->pid == pid){
++      // cprintf("get inside send positive %d--->%d   found: %d\n",now_pid, pid, found);
++      p->data[0] = a;
++      p->data[1] = b;
++      p->data[2] = c;
++      p->target = now_pid;   //set the target to be the process
++      signal_sem(p->sid);
++      release(&Msg_lock);
++      return 1;
++    }
++  }
++  // if(flag) cprintf("get nothing %d--->%d  found : %d\n",now_pid, pid, found);
++  // cprintf("get outside send positive %d--->%d\n",now_pid, pid);
++  struct MSGstate *myp = Msend[myNum];
++  p = Mrecv[found];
++  semaphore = alloc_sem(0);
++  if(semaphore == -1) return -1;
++  
++  if(Mrecv[found] == NULL){   // set a nagetive receive for the target
++    Mrecv[found] = MSalloc();
++    p = Mrecv[found];
++  }else{
++    
++    for(; p->next !=NULL; p = p->next);
++    p->next = MSalloc();   
++    p = p->next;
++  }
++  if(p == NULL) return -1;
++  p->pid = pid;
++  p->positive = 0;
++  p->data[0] = a;
++  p->data[1] = b;
++  p->data[2] = c;
++  p->target = myNum;
++  p->sid = semaphore;
++  p->next = NULL;
++
++  Msend[myNum] =  MSalloc();   
++  myp = Msend[myNum];
++  if(myp == NULL) return -1;
++  myp->pid = now_pid;  // set a positive send for the process itself
++  myp->positive = 1;
++  myp->data[0] = a;
++  myp->data[1] = b;
++  myp->data[2] = c;
++  myp->target = found;
++  myp->sid = semaphore;
++  release(&Msg_lock);
++
++  wait_sem(semaphore);
++
++  acquire(&Msg_lock);
++  MSfree(myp);
++  Msend[myNum] = NULL;
++  dealloc_sem(semaphore);
++  release(&Msg_lock);
++
++  return 1;
++}
++
++int            
++msg_receive(int* a, int* b, int* c){
++  int i;
++  int target;
++  int now_pid= myproc()->pid;
++  int flag = 0;
++  int semaphore;
++  int myNum = getProcNum(now_pid);
++  struct MSGstate * pre_p = Mrecv[myNum];
++  struct MSGstate * p = Mrecv[myNum];
++
++  acquire(&Msg_lock);
++
++  for(i = 0; p != NULL; p = p->next ,flag = 1, i++){  // if other process has sent some msg
++      if(flag) pre_p = pre_p->next;
++      if(p->pid == now_pid && p->positive == 0){
++        *a = p->data[0];
++        *b = p->data[1];
++        *c = p->data[2];
++        // cprintf("now recieve %d \n",*a);
++        target = p->target;
++        semaphore = p->sid;
++        if(i == 0) Mrecv[myNum] = p->next;
++        else{
++          pre_p->next = p->next;
++        }
++        MSfree(p);
++        signal_sem(semaphore);
++        release(&Msg_lock);
++        return target;
++      }
++  }
++  
++  for(i = 0; p != NULL; p = p->next ,flag = 1, i++){  // if other process has sent some msg
++      if(flag) pre_p = pre_p->next;
++      if(p->pid != now_pid){
++        if(i == 0) Mrecv[myNum] = p->next;
++        else{
++          pre_p->next = p->next;
++        }
++        MSfree(p);
++      }
++  }
++  semaphore = alloc_sem(0);
++  if(semaphore == -1){
++    release(&Msg_lock);
++    return -1;
++  } 
++  if(Mrecv[myNum]==NULL){
++    Mrecv[myNum] = MSalloc();
++    // cprintf("\n----------------want things pid: %d myNUM: %d\n\n",now_pid, myNum);
++    p = Mrecv[myNum];
++  }else{
++    pre_p->next = MSalloc();
++    p = pre_p->next;
++  }
++  if(p == NULL) {
++    cprintf("allocate wrong\n");
++    return -1;
++  }
++
++  p->pid = now_pid;
++  p->positive = 1;
++  p->sid = semaphore;
++  p->target = myNum;
++  p->next = NULL;
++
++  // cprintf("in %d recv is %d   \n",now_pid,Mrecv[myNum]->pid);
++  release(&Msg_lock);
++  // cprintf("%d  in waiting\n",p->pid);
++  wait_sem(semaphore);
++  acquire(&Msg_lock);
++  // cprintf("%d  finish waiting\n",p->pid);
++  *a = p->data[0];
++  *b = p->data[1];
++  *c = p->data[2];
++  target = p->target;
++  if(i == 0) Mrecv[myNum] = p->next;
++  else{
++       pre_p->next = p->next;
++      }
++  MSfree(p);
++  dealloc_sem(semaphore);
++  release(&Msg_lock);
++  return target;
++}
+\ No newline at end of file
+diff -uNr /home/proj3-base/semtest.c ./semtest.c
+--- /home/proj3-base/semtest.c	2021-05-20 14:57:20.340533851 +0800
++++ ./semtest.c	2021-06-07 19:54:31.000000000 +0800
+@@ -11,6 +11,7 @@
+ void compute(int sem){//wait on a semaphore, print something, and then signal the semaphore
+   int pid=getpid(),i=0;
+   sleep(3);
++  // printf(1,"now get in %d\n",pid);
+   if((wait_sem(sem))<0){
+     printf(1,"wait error, pid=%d, sem=%d\n",pid,sem);
+     return;
+@@ -86,8 +87,12 @@
+          compute(s[i]);
+          exit();
+        }
++        
+      }
+-    for(j=0;j<5;j++) wait();//wait for five children to die
++    for(j=0;j<5;j++) {
++      wait();//wait for five children to die
++      // printf(1,"successfully exit \n");
++    }
+   }
+    
+   printf(1,"normal test done\n");
+diff -uNr /home/proj3-base/stru.h ./stru.h
+--- /home/proj3-base/stru.h	1970-01-01 08:00:00.000000000 +0800
++++ ./stru.h	2021-06-07 13:03:26.000000000 +0800
+@@ -0,0 +1,25 @@
++#include "spinlock.h"
++
++//semaphore
++struct semaphore{
++  struct spinlock lock;
++  int value;             
++  int used;        
++  struct proc_list *procList;
++  int length;
++};
++
++struct proc_list{
++  struct proc *proc;
++  struct proc_list *next;
++};
++
++// Massage trans
++struct MSGstate{
++  int pid;
++  int positive;
++  int target;
++  int sid; //semaphore id
++  int data[3];
++  struct MSGstate *next;
++};
+\ No newline at end of file
+diff -uNr /home/proj3-base/syscall.c ./syscall.c
+--- /home/proj3-base/syscall.c	2021-05-20 14:57:20.340533851 +0800
++++ ./syscall.c	2021-06-07 12:59:10.000000000 +0800
+@@ -104,6 +104,14 @@
+ extern int sys_write(void);
+ extern int sys_uptime(void);
+ extern int sys_shutdown(void);
++extern int sys_alloc_sem(void);
++extern int sys_wait_sem(void);
++extern int sys_signal_sem(void);
++extern int sys_dealloc_sem(void);
++extern int sys_msg_send(void);
++extern int sys_msg_receive(void);
++extern int sys_Dmalloc(void);
++extern int sys_Dfree(void);
+ 
+ static int (*syscalls[])(void) = {
+ [SYS_fork]    sys_fork,
+@@ -127,7 +135,15 @@
+ [SYS_link]    sys_link,
+ [SYS_mkdir]   sys_mkdir,
+ [SYS_close]   sys_close,
+-[SYS_shutdown] sys_shutdown,
++[SYS_shutdown]      sys_shutdown,
++[SYS_alloc_sem]     sys_alloc_sem,
++[SYS_wait_sem]      sys_wait_sem,
++[SYS_signal_sem]    sys_signal_sem,
++[SYS_dealloc_sem]   sys_dealloc_sem,
++[SYS_msg_send]      sys_msg_send,
++[SYS_msg_receive]   sys_msg_receive,
++[SYS_Dmalloc]       sys_Dmalloc,
++[SYS_Dfree]         sys_Dfree,
+ };
+ 
+ void
+diff -uNr /home/proj3-base/syscall.h ./syscall.h
+--- /home/proj3-base/syscall.h	2021-05-20 14:57:20.344533851 +0800
++++ ./syscall.h	2021-06-07 12:58:22.000000000 +0800
+@@ -21,3 +21,11 @@
+ #define SYS_mkdir  20
+ #define SYS_close  21
+ #define SYS_shutdown 22
++#define SYS_alloc_sem 23
++#define SYS_wait_sem 24
++#define SYS_signal_sem 25
++#define SYS_dealloc_sem 26
++#define SYS_msg_send 27
++#define SYS_msg_receive 28
++#define SYS_Dmalloc 29
++#define SYS_Dfree 30
+diff -uNr /home/proj3-base/sysproc.c ./sysproc.c
+--- /home/proj3-base/sysproc.c	2021-05-20 14:57:20.344533851 +0800
++++ ./sysproc.c	2021-06-07 13:07:53.000000000 +0800
+@@ -6,6 +6,9 @@
+ #include "memlayout.h"
+ #include "mmu.h"
+ #include "proc.h"
++#include "stru.h"
++void* malloc(uint);
++void free(void*);
+ 
+ int
+ sys_fork(void)
+@@ -94,4 +97,82 @@
+ sys_shutdown(void){
+   outw(0x604, 0x2000);
+   return 0;
+-}
+\ No newline at end of file
++}
++
++int 
++sys_alloc_sem(void){
++  int v;
++  if(argint(0, &v) < 0)
++    return -1;
++  return alloc_sem(v);
++}
++
++int 
++sys_wait_sem(void){
++  int i;
++  if(argint(0, &i) < 0)
++    return -1;
++  return wait_sem(i);
++}
++
++int 
++sys_signal_sem(void){
++  int i;
++  if(argint(0, &i) < 0)
++    return -1;
++  return signal_sem(i);
++}
++
++int 
++sys_dealloc_sem(void){
++  int i;
++  if(argint(0, &i) < 0)
++    return -1;
++  return dealloc_sem(i);
++}
++
++int 
++sys_msg_send(void){
++  int pid,a,b,c;
++  if(argint(0, &pid) < 0)
++    return -1;
++  if(argint(1, &a) < 0)
++    return -1;
++  if(argint(2, &b) < 0)
++    return -1;
++  if(argint(3, &c) < 0)
++    return -1;
++  return msg_send(pid, a, b, c);
++}
++
++int 
++sys_msg_receive(void){
++  int a,b,c;
++  if(argint(0, &a) < 0)
++    return -1;
++  if(argint(1, &b) < 0)
++    return -1;
++  if(argint(2, &c) < 0)
++    return -1;
++  return msg_receive((int*)a, (int*)b, (int*)c);
++ }
++
++ int sys_Dmalloc(void){
++   int a = 1;
++  //  if(argint(0, &a) < 0)
++  //   return -1;
++  //   if(a == 0){
++  //     a = (int)malloc(sizeof(struct proc_list));
++  //   }else if(a == 1){
++  //     a = (int)malloc(sizeof(struct MSGstate));
++  //   }
++    return a;
++ }
++
++ int sys_Dfree(void){
++  //  int a;
++  //  if(argint(0, &a) < 0)
++  //   return -1;
++  //   free(a);
++    return 0;
++ }
+\ No newline at end of file
+diff -uNr /home/proj3-base/umalloc.c ./umalloc.c
+--- /home/proj3-base/umalloc.c	2021-05-20 14:57:20.344533851 +0800
++++ ./umalloc.c	2021-06-07 18:56:43.000000000 +0800
+@@ -3,6 +3,7 @@
+ #include "user.h"
+ #include "param.h"
+ 
++
+ // Memory allocator by Kernighan and Ritchie,
+ // The C programming Language, 2nd ed.  Section 8.7.
+ 
+diff -uNr /home/proj3-base/usys.S ./usys.S
+--- /home/proj3-base/usys.S	2021-05-20 14:57:20.344533851 +0800
++++ ./usys.S	2021-06-07 12:59:31.000000000 +0800
+@@ -30,3 +30,11 @@
+ SYSCALL(sleep)
+ SYSCALL(uptime)
+ SYSCALL(shutdown)
++SYSCALL(alloc_sem)
++SYSCALL(wait_sem)
++SYSCALL(signal_sem)
++SYSCALL(dealloc_sem)
++SYSCALL(msg_send)
++SYSCALL(msg_receive)
++SYSCALL(Dmalloc)
++SYSCALL(Dfree)
+\ No newline at end of file

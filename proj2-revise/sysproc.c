@@ -95,3 +95,70 @@ sys_shutdown(void){
   outw(0x604, 0x2000);
   return 0;
 }
+
+
+
+
+// int 		    clone(void* (*)(void*), void *stack, void *arg);
+int 
+sys_clone(void){
+  int fn, stack, arg;
+  if(argint(0, &fn) < 0){
+    return -1;
+  }
+  if(argint(1, &stack) < 0){
+    return -1;
+  }
+  if(argint(2, &arg) < 0){
+    return -1;
+  }
+  return clone((void *)fn, (void *)stack, (void *)arg);
+}
+// int 		    join(int, void **ret_p, void **stack);
+int 
+sys_join(void){
+  int tid;
+  int ret_p;
+  int stack;
+  if(argint(0, &tid) < 0){
+    return -1;
+  }
+  if(argint(1, &ret_p) < 0){
+    return -1;
+  }
+  if(argint(2, &stack) < 0){
+    return -1;
+  }
+  return join(tid, (void **)ret_p, (void **)stack);
+}
+// int             thread_exit(void *ret);
+int 
+sys_thread_exit(void){
+  int ret;
+  if(argint(0, &ret) < 0){
+    return -1;
+  }
+  return thread_exit((void *)ret);
+}
+// int             set_priority(int, int);
+
+int
+sys_set_priority(void){
+  int pid, prior;
+  if(argint(0, &pid) < 0){
+    return -1;
+  }
+  if(argint(1, &prior) < 0){
+    return -1;
+  }
+  return set_priority(pid, prior);
+}
+// int             enable_sched_display(int);
+int 
+sys_enable_sched_display(void){
+  int i;
+  if(argint(0, &i) < 0){
+    return -1;
+  }
+  return enable_sched_display(i);
+}
