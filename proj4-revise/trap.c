@@ -77,6 +77,18 @@ trap(struct trapframe *tf)
             cpuid(), tf->cs, tf->eip);
     lapiceoi();
     break;
+  // --------------------------------------------------------------------------------------------1
+  case T_PGFLT:
+    // cprintf("get pgflt\n");
+    if((tf->err & 0b111) == 0b111){   // a user process are to write on a protected page
+      char *a = (char*)rcr2();
+      pde_t* pgdir = myproc()->pgdir;
+      Handle_trap_copy_on_writing(pgdir, a);
+      // cprintf("write err end in pid: %d \n", myproc()->pid);
+      }
+      break;
+
+  // --------------------------------------------------------------------------------------------2
 
   //PAGEBREAK: 13
   default:

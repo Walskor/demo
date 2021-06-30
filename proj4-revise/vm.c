@@ -8,6 +8,7 @@
 #include "elf.h"
 
 extern char data[];  // defined by kernel.ld
+extern int free_frame_cnt;
 pde_t *kpgdir;  // for use in scheduler()
 
 // Set up CPU's kernel segment descriptors.
@@ -70,6 +71,7 @@ mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm)
       return -1;
     if(*pte & PTE_P)
       panic("remap");
+    
     *pte = pa | perm | PTE_P;
     if(a == last)
       break;
@@ -78,6 +80,8 @@ mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm)
   }
   return 0;
 }
+
+
 
 // There is one page table per process, plus one that's used when
 // a CPU is not running any process (kpgdir). The kernel uses the
@@ -120,9 +124,11 @@ setupkvm(void)
 {
   pde_t *pgdir;
   struct kmap *k;
-
-  if((pgdir = (pde_t*)kalloc()) == 0)
+  // int pre,p2,p1;
+  // pre = free_frame_cnt;
+  if((pgdir = (pde_t*)kalloc()) == 0)    // 分配新的内核页面，会造成一个页面的减少。
     return 0;
+  // p1 = free_frame_cnt;
   memset(pgdir, 0, PGSIZE);
   if (P2V(PHYSTOP) > (void*)DEVSPACE)
     panic("PHYSTOP too high");
@@ -132,6 +138,8 @@ setupkvm(void)
       freevm(pgdir);
       return 0;
     }
+  // p2=free_frame_cnt;
+  // cprintf("in %d setup: pre-p1  %d,   p1-p2:  %d \n",myproc()->pid,pre-p1,p1-p2);
   return pgdir;
 }
 
@@ -189,7 +197,12 @@ inituvm(pde_t *pgdir, char *init, uint sz)
   mem = kalloc();
   memset(mem, 0, PGSIZE);
   mappages(pgdir, 0, PGSIZE, V2P(mem), PTE_W|PTE_U);
+
   memmove(mem, init, sz);
+  // -----------------------------------------------------------------------------------------------------------1
+    // add the reference number of the page
+  kaddRefer(V2P(mem));
+  // -----------------------------------------------------------------------------------------------------------2
 }
 
 // Load a program segment into pgdir.  addr must be page-aligned
@@ -244,6 +257,10 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       kfree(mem);
       return 0;
     }
+    // -----------------------------------------------------------------------------------------------------------1
+    // add the reference number of the page
+    kaddRefer(V2P(mem));
+    // -----------------------------------------------------------------------------------------------------------2
   }
   return newsz;
 }
@@ -269,9 +286,13 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
     else if((*pte & PTE_P) != 0){
       pa = PTE_ADDR(*pte);
       if(pa == 0)
-        panic("kfree");
-      char *v = P2V(pa);
-      kfree(v);
+        panic("kfree in deallocnvm");
+      // char *v = P2V(pa);
+      // kfree(v);
+      // -------------------------------------------------------------------------1
+      // change free to checkPage
+      kfreeRefer(pa);
+      // -------------------------------------------------------------------------2
       *pte = 0;
     }
   }
@@ -284,6 +305,7 @@ void
 freevm(pde_t *pgdir)
 {
   uint i;
+  
 
   if(pgdir == 0)
     panic("freevm: no pgdir");
@@ -292,6 +314,12 @@ freevm(pde_t *pgdir)
     if(pgdir[i] & PTE_P){
       char * v = P2V(PTE_ADDR(pgdir[i]));
       kfree(v);
+      // -------------------------------------------------------------------------1
+      // change free to checkPage
+      // uint pa;
+      // pa = PTE_ADDR(pgdir[i]);
+      // kfreeRefer(pa);
+      // -------------------------------------------------------------------------2
     }
   }
   kfree((char*)pgdir);
@@ -341,6 +369,106 @@ bad:
   freevm(d);
   return 0;
 }
+//-----------------------------------------------------------------------------------------------------------------1
+  
+  pde_t*
+  copyuvm_new(pde_t *pgdir, uint sz)
+  {
+    pde_t *d;
+    pte_t *pte;
+    uint pa, i, flags;
+    // cprintf("Get into copy from pid: %d ,  sz = %d\n", myproc()->pid,sz);
+    // cprintf("before setupkvm in pid: %d\n", myproc()->pid);
+    // make a new kernal page table directory
+    // int pre,p1,p2;
+    // pre = free_frame_cnt;
+    if((d = setupkvm()) == 0)
+      return 0;
+    // p1 = free_frame_cnt;
+    ////// cprintf("after setupkvm in pid: %d\n", myproc()->pid);
+    // copy all the PTE from parent 
+    for(i = 0; i < sz; i += PGSIZE){
+      ////// cprintf("before walkpgdir in pid: %d\n",myproc()->pid);
+      if((pte = walkpgdir(pgdir, (void *) i, 0)) == 0)
+        panic("copyuvm: pte should exist");
+      ////// cprintf("after walkpgdir in pid: %d\n",myproc()->pid);
+      if(!(*pte & PTE_P))
+        panic("copyuvm: page not present");
+      /* --------------------------------------do not allocate new pages ------*/
+      
+      
+      pa = PTE_ADDR(*pte);    
+      // cprintf("before change flags    ");
+      // kshowRefer(pa);   
+      flags = PTE_FLAGS(*pte);
+
+      flags = PTE_Clear_writable(flags);       
+      flags = PTE_Clear_Val(flags);     
+      flags = PTE_Set_Val_Copy_on_Writing(flags);
+      ///// if((mem = kalloc()) == 0)
+      //////   goto bad;
+      ////// memmove(mem, (char*)P2V(pa), PGSIZE);
+      // *pte = V2P(pa) | flags;
+      *pte = pa | flags;
+      ////// cprintf("flags : %x , pte : %x \n",flags, *pte);
+      
+      if(mappages(d, (void*)i, PGSIZE, pa, flags) < 0)
+        goto bad;
+      // -----------------------------------------------------------------------------------------------------------1
+      // add the reference number of the page
+      kaddRefer(pa);
+     // -----------------------------------------------------------------------------------------------------------2
+      ////// cprintf("after change flags    ");
+      ////// kshowRefer(pa);  
+      lcr3(V2P(pgdir));
+      ////// lcr3(V2P(d));
+      ////// cprintf("after mappages\n");
+    }
+    // p2 = free_frame_cnt;
+    ////// cprintf("in %d copy: pre  %d   p1:  %d,   p2:  %d \n",myproc()->pid,pre,p1,p2);
+    // cprintf("in %d copy: pre-p1  %d,   p1-p2:  %d \n",myproc()->pid,pre-p1,p1-p2);
+    return d;
+
+  bad:
+    lcr3(V2P(pgdir));
+    // lcr3(V2P(d));
+    freevm(d);
+    return 0;
+  }
+
+int Handle_trap_copy_on_writing(pde_t *pgdir, char *a){
+  pte_t *pte;
+  uint pa, flags;
+  char *mem;
+  if((pte = walkpgdir(myproc()->pgdir, a, 0)) == 0){
+        return -1;
+  }
+  // cprintf("Handle trap copy on Writing address: %d in pid : %d        \n",PTE_ADDR(*pte),myproc()->pid);
+  if((((*pte) & PTE_W) == 0 ) && ((((*pte) >> 9) & 0b111) == 0b001)){  // unwritable && copy_on_writing
+    // cprintf("get inside if\n");
+    pa = PTE_ADDR(*pte);
+    flags = PTE_FLAGS(*pte);
+    flags = PTE_Clear_Val(flags);
+    flags = flags | PTE_W;
+    
+    if((mem = kalloc()) == 0){
+      kfree(mem);
+      return 0;
+    }
+    memmove(mem, (char*)P2V(pa), PGSIZE);
+    kfreeRefer(pa);       
+    //   remap
+    *pte = V2P(mem) | flags | PTE_P;
+    kaddRefer(PTE_ADDR(*pte));
+    // kshowRefer(PTE_ADDR(*pte));
+    lcr3(V2P(pgdir));
+
+    return 1;
+  }
+  return 0;
+  
+}
+//-----------------------------------------------------------------------------------------------------------------2
 
 //PAGEBREAK!
 // Map user virtual address to kernel address.

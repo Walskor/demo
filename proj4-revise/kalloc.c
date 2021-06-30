@@ -12,6 +12,8 @@
 void freerange(void *vstart, void *vend);
 extern char end[]; // first address after kernel loaded from ELF file
                    // defined by the kernel linker script in kernel.ld
+char refer[65540];
+
 int free_frame_cnt=0;
 struct run {
   struct run *next;
@@ -31,6 +33,9 @@ struct {
 void
 kinit1(void *vstart, void *vend)
 {
+  for(int i = 0 ; i < 65540; i++){
+    refer[i] = (char)0;
+  }
   initlock(&kmem.lock, "kmem");
   kmem.use_lock = 0;
   freerange(vstart, vend);
@@ -48,8 +53,12 @@ freerange(void *vstart, void *vend)
 {
   char *p;
   p = (char*)PGROUNDUP((uint)vstart);
-  for(; p + PGSIZE <= (char*)vend; p += PGSIZE)
+  for(; p + PGSIZE <= (char*)vend; p += PGSIZE){
+    // uint pa = V2P(p);
+    // kfreeRefer(pa);
     kfree(p);
+  }
+    
 }
 //PAGEBREAK: 21
 // Free the page of physical memory pointed at by v,
@@ -97,3 +106,66 @@ kalloc(void)
   return (char*)r;
 }
 
+
+// -----------------------------------------------------------------------------------------------------------1
+//int kcheckPage(uint pa)
+//int kaddRefer(uint pa)
+//int kfreeRefer(uint pa)
+// Add the reference number of a page
+int kaddRefer(uint pa){
+  if(kmem.use_lock)
+    acquire(&kmem.lock);
+  pa = (pa >> 12);
+  refer[pa]++;
+  if(kmem.use_lock){
+    // if(refer[pa]>2)
+    // cprintf("the ++ number of %d is %d\n",pa,refer[pa]);
+    release(&kmem.lock);
+  }
+    
+  return 1;
+}
+
+// Minus the reference number of a page
+int kfreeRefer(uint pa){
+  uint paa = (pa >> 12);
+  if(kmem.use_lock)
+    acquire(&kmem.lock);
+  refer[paa]--;
+  
+  if(kmem.use_lock){
+    // cprintf("the -- number of %d is %d\n",paa,refer[paa]);
+    release(&kmem.lock);
+  }
+    
+  
+  return kcheckPage(pa);
+}
+
+// Check if the reference number of page is zero, which means the page should be released.
+int kcheckPage(uint pa){
+  if(kmem.use_lock)
+    acquire(&kmem.lock);
+  if(refer[pa >> 12] <= 0){
+    char *v = P2V(pa);
+    if(kmem.use_lock)
+      release(&kmem.lock);
+    kfree(v);
+    
+    return 1;
+  }
+  if(kmem.use_lock)
+    release(&kmem.lock);
+  return 0;
+}
+
+int kshowRefer(uint pa){
+  pa = (pa >> 12);
+  if(kmem.use_lock)
+    acquire(&kmem.lock);
+  cprintf("the reference number of %d is %d\n",pa,refer[pa]);
+  if(kmem.use_lock)
+    release(&kmem.lock);
+  return 1;
+}
+// -----------------------------------------------------------------------------------------------------------2

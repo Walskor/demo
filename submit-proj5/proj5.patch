@@ -1,0 +1,304 @@
+diff -uNr -x .git -x .gitignore -x .img /home/proj5-base/defs.h ./defs.h
+--- /home/proj5-base/defs.h	2021-06-19 20:44:43.157009077 +0800
++++ ./defs.h	2021-06-29 15:40:17.000000000 +0800
+@@ -120,6 +120,7 @@
+ int             wait(void);
+ void            wakeup(void*);
+ void            yield(void);
++void            check_fs(void);
+ 
+ // swtch.S
+ void            swtch(struct context**, struct context*);
+Binary files /home/proj5-base/fs5i.img and ./fs5i.img differ
+Binary files /home/proj5-base/fs5.img and ./fs5.img differ
+diff -uNr -x .git -x .gitignore -x .img /home/proj5-base/main.c ./main.c
+--- /home/proj5-base/main.c	2021-06-19 20:44:43.157009077 +0800
++++ ./main.c	2021-06-29 15:39:52.000000000 +0800
+@@ -51,7 +51,12 @@
+ static void
+ mpmain(void)
+ {
+-  cprintf("cpu%d: starting %d\n", cpuid(), cpuid());
++  //cprintf("cpu%d: starting %d\n", cpuid(), cpuid());
++  //--------------------------------------------------------------------------
++  cprintf("cpu%d: starting %d ----------------------------------  Running fsck ...\n", cpuid(), cpuid());
++  check_fs();
++  cprintf("Finish fsck ...\n", cpuid(), cpuid());
++  //---------------------------------------------------------------------------
+   idtinit();       // load idt register
+   xchg(&(mycpu()->started), 1); // tell startothers() we're up
+   scheduler();     // start running processes
+diff -uNr -x .git -x .gitignore -x .img /home/proj5-base/proc.c ./proc.c
+--- /home/proj5-base/proc.c	2021-06-19 20:44:43.161009077 +0800
++++ ./proc.c	2021-06-29 22:21:58.000000000 +0800
+@@ -6,6 +6,8 @@
+ #include "x86.h"
+ #include "proc.h"
+ #include "spinlock.h"
++#include "fs.h"
++#include "stat.h"
+ 
+ struct {
+   struct spinlock lock;
+@@ -14,6 +16,8 @@
+ 
+ static struct proc *initproc;
+ 
++int fork_winner=0;
++
+ int nextpid = 1;
+ extern void forkret(void);
+ extern void trapret(void);
+@@ -215,6 +219,11 @@
+   acquire(&ptable.lock);
+ 
+   np->state = RUNNABLE;
++  
++  if(fork_winner){
++    myproc()->state=RUNNABLE;
++    sched();
++  }
+ 
+   release(&ptable.lock);
+ 
+@@ -532,3 +541,239 @@
+     cprintf("\n");
+   }
+ }
++//------------------------------------------------------------------------
++#define SECTSIZE  512
++// copy from bootmain.c
++void 
++waitdisk(void)
++{
++  // Wait for disk ready
++  while((inb(0x1F7) & 0xC0) != 0x40);
++}
++
++// copy from bootmain.c
++// Read a single sector at offset into dst.
++void
++readsec(void *dst, uint offset)
++{
++  // Issue command.
++  waitdisk();
++  outb(0x1F2, 1);   // count = 1
++  outb(0x1F3, offset);
++  outb(0x1F4, offset >> 8);
++  outb(0x1F5, offset >> 16);
++  //------------------------------------------
++  // E0->F0  Read from disk img 1
++  outb(0x1F6, (offset >> 24) | 0xF0);
++  //------------------------------------------
++  outb(0x1F7, 0x20);  // cmd 0x20 - read sectors
++
++  // Read data.
++  waitdisk();
++  insl(0x1F0, dst, SECTSIZE/4);
++}
++
++// Write a single sector at offset into dst.
++void
++Writesec(void *dst, uint offset)
++{
++  // Issue command.
++  waitdisk();
++  outb(0x1F2, 1);   // count = 1
++  outb(0x1F3, offset);
++  outb(0x1F4, offset >> 8);
++  outb(0x1F5, offset >> 16);
++  //------------------------------------------
++  // E0->F0  Read from disk img 1
++  outb(0x1F6, (offset >> 24) | 0xF0);
++  //------------------------------------------
++  outb(0x1F7, 0x30);  // cmd 0x30 - write sectors
++
++  // Read data.
++  waitdisk();
++  outsl(0x1F0, dst, SECTSIZE/4);
++}
++
++// copy from bootmain.c
++void 
++readblock(char* pa, uint count, uint offset)
++{
++  char* epa;
++
++  epa = pa + count;
++
++  // Round down to sector boundary.
++  pa -= offset % SECTSIZE;
++
++  // Translate from bytes to sectors; kernel starts at sector 1.
++  offset = (offset / SECTSIZE) + 1;
++
++  // If this is too slow, we could read lots of sectors at a time.
++  // We'd write more to memory than asked, but it doesn't matter --
++  // we load in increasing order.
++  for(; pa < epa; pa += SECTSIZE, offset++)
++    readsec(pa, offset);
++}
++
++int flag[250];
++
++void 
++writeblock(char* pa, uint count, uint offset)
++{
++  char* epa;
++
++  epa = pa + count;
++
++  // Round down to sector boundary.
++  pa -= offset % SECTSIZE;
++
++  // Translate from bytes to sectors; kernel starts at sector 1.
++  offset = (offset / SECTSIZE) + 1;
++
++  // If this is too slow, we could read lots of sectors at a time.
++  // We'd write more to memory than asked, but it doesn't matter --
++  // we load in increasing order.
++  for(; pa < epa; pa += SECTSIZE, offset++)
++    Writesec(pa, offset);
++}
++
++#define ROOTINO 1  // root i-number
++#define BSIZE 512  // block size
++#define ENTNUM  BSIZE/sizeof(struct dirent)
++int logNum;
++char single[4096];
++void
++dfs(const char* name, const struct dinode* inode,int depth){
++  // address of dataBlock going to access
++  uint addr;
++  // dataBlock
++  char db[512];
++  // single block
++
++  // inode
++  struct dinode INODES[8]; 
++  // cprintf("before if\n");
++  if(inode->type == 0) return;
++  if(inode->type == T_DIR){
++    // 12 direct address
++    for(int i = 0; i < NDIRECT; i++){
++      addr = inode->addrs[i];
++      if(0 == addr) {
++        continue;
++      }
++      // get the data block on the address
++      readblock(&db[0],BSIZE,(addr-1) * BSIZE);
++      struct dirent* entry = (struct dirent*)(&db);
++      for(int j = 0; j < ENTNUM; j++){
++        // get access to each directory entry saved in the data block
++        if(entry->name[0]=='.'||
++        entry->inum<=0||
++        entry->inum>200){
++          entry++;
++          continue;
++        }
++        // get the inode metioned in the entry
++        readblock((char*)(&INODES),BSIZE, BSIZE + logNum * BSIZE + (entry->inum/8 * BSIZE));
++        struct dinode* next_inode = &INODES[entry->inum%8];
++        // dfs into the newly got inode and search for more legal files
++        if(next_inode==inode) continue;
++        // flag the found dir/file
++        flag[entry->inum] = 1;
++        dfs(entry->name,next_inode,depth+1);
++        entry++;
++      }
++    }
++  
++    addr = inode->addrs[NDIRECT];
++    if(addr == 0) return;
++    // get the single indirect block
++    readblock(&single[0],4096,(addr-1) * BSIZE);
++    // for the 128 addresses in the block, find all avaliable ones
++    // the address is 4-Byte long, so the number i adds itself by 4 one time
++    for(int i = 0;i < NINDIRECT;i+=4){
++      addr = (uint)*(&single + i);
++      if(addr == 0) continue;
++      readblock(&db[0],BSIZE,(addr - 1) * BSIZE);
++      struct dirent* entry = (struct dirent*)(&db);
++      // if the address is avaliable, look for new files and the following is some familiar actions
++      for(int j = 0; j < ENTNUM; j++,entry++){
++        if(entry->name[0]=='.'||
++        entry->inum==0||
++        entry->inum>200){
++          continue;
++        }
++        readblock((char*)(&INODES),BSIZE, BSIZE + logNum * BSIZE + (entry->inum/8 * BSIZE));
++        struct dinode* next_inode = &INODES[entry->inum%8];
++        flag[entry->inum] = 1;
++        dfs(entry->name,next_inode,depth+1); 
++      }
++    }
++  }else{
++      // cprintf("name :  %s\n",name);
++  }
++}
++
++void check_fs()
++{
++  struct superblock sb;
++  struct dinode INODE[8];
++  struct dinode *check;
++  
++  flag[ROOTINO] = 1;
++    // check
++  int checkFlag ;
++    // False Num
++  int Fnum = 0;
++  int Dnum = 0;
++  uint addr;
++  // int a[128];
++  readblock((char*)(&sb),BSIZE,0);
++  readblock((char*)(&INODE),BSIZE,BSIZE + (sb.nlog) * BSIZE);
++  logNum = sb.nlog;
++  struct dinode * root = &INODE[1];
++  dfs("/",root,1);
++  // cprintf("after dfs\n");
++  for(int i = 1; i < sb.ninodes; i++){
++    if(i % 8 == 0){
++      readblock((char*)(&INODE),BSIZE,BSIZE + (sb.nlog) * BSIZE + i / 8 * BSIZE);
++    }
++    check = &INODE[i % 8];
++    if(flag[i] == 0 && check->type != 0){
++      check->type = 0;
++      Fnum = Fnum + 1;
++      checkFlag = 1;
++
++
++      for(int i = 0; i < NDIRECT; i++){
++        addr = check->addrs[i];
++        if(0 == addr) {
++          continue;
++        }
++        // writeblock((char*)(&a),512,(addr-1) * BSIZE);
++        Dnum++;
++      }
++
++        addr = check->addrs[NDIRECT];
++        if(addr != 0){
++          Dnum++;
++          readblock(&single[0],4096,(addr-1) * BSIZE);
++          for(int i = 0;i < NINDIRECT;i+=4){
++          addr = (uint)*(&single + i);
++          if(addr == 0) continue;
++          Dnum++;
++          // writeblock((char*)(&a),BSIZE,(addr - 1) * BSIZE);
++          }
++          // writeblock((char*)(&a),512,(addr-1) * BSIZE);
++        }
++
++      cprintf("\nfsck: inode %d is allocated but is not referenced by any dir!",i);
++      writeblock((char*)(&INODE),BSIZE,BSIZE + (sb.nlog) * BSIZE + (i / 8) * BSIZE);
++      cprintf("Fixing ... done");
++    }
++  }
++  if(checkFlag){
++    cprintf("\nfsck completed. Fixed %d inodes and freed %d disk blocks.\n ",Fnum,Dnum);
++  }else{
++    cprintf(" fsck: no problem found. ");
++  }
++}
+\ No newline at end of file

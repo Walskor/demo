@@ -68,6 +68,12 @@ char*           kalloc(void);
 void            kfree(char*);
 void            kinit1(void*, void*);
 void            kinit2(void*, void*);
+//----------------------------------------------------------------1
+int             kcheckPage(uint pa);
+int             kaddRefer(uint pa);
+int             kfreeRefer(uint pa);
+int             kshowRefer(uint pa);
+//----------------------------------------------------------------2
 
 // kbd.c
 void            kbdintr(void);
@@ -155,6 +161,7 @@ int             argstr(int, char**);
 int             fetchint(uint, int*);
 int             fetchstr(uint, char**);
 void            syscall(void);
+int             get_free_frame_cnt(void);
 
 // timer.c
 void            timerinit(void);
@@ -181,6 +188,10 @@ void            freevm(pde_t*);
 void            inituvm(pde_t*, char*, uint);
 int             loaduvm(pde_t*, char*, struct inode*, uint, uint);
 pde_t*          copyuvm(pde_t*, uint);
+//------------------------------------------------------------1
+pde_t*          copyuvm_new(pde_t*, uint);
+int             Handle_trap_copy_on_writing(pde_t*,char*);
+//------------------------------------------------------------2
 void            switchuvm(struct proc*);
 void            switchkvm(void);
 int             copyout(pde_t*, uint, void*, uint);

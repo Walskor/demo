@@ -12,7 +12,9 @@
 ~h
 # Command Line History (newest to oldest):
 :wq
-|2,0,1623042166,,"wq"
+|2,0,1624965997,,"wq"
+:21
+|2,0,1624965994,,"21"
 :q
 |2,0,1620299576,,"q"
 :Q
@@ -29,36 +31,64 @@
 # Registers:
 
 # File marks:
-'0  788  0  ~/submit-proj3/proj3.patch
-|4,48,788,0,1623112462,"~/submit-proj3/proj3.patch"
-'1  1  0  ~/proj3-revise/stru.h
-|4,49,1,0,1623042166,"~/proj3-revise/stru.h"
-'2  1  46  ~/.gdbinit
-|4,50,1,46,1621282381,"~/.gdbinit"
-'3  1  0  ~/proj1-revise/.gdbinit
-|4,51,1,0,1620299576,"~/proj1-revise/.gdbinit"
-'4  199  0  ~/proj1-revise/Makefile
-|4,52,199,0,1619703557,"~/proj1-revise/Makefile"
+'0  1  0  ~/.gdbinit
+|4,48,1,0,1624965997,"~/.gdbinit"
+'1  1  30  ~/.gdbinit
+|4,49,1,30,1623768944,"~/.gdbinit"
+'2  788  0  ~/submit-proj3/proj3.patch
+|4,50,788,0,1623112462,"~/submit-proj3/proj3.patch"
+'3  1  0  ~/proj3-revise/stru.h
+|4,51,1,0,1623042166,"~/proj3-revise/stru.h"
+'4  1  46  ~/.gdbinit
+|4,52,1,46,1621282381,"~/.gdbinit"
 '5  1  46  ~/.gdbinit
-|4,53,1,46,1619694575,"~/.gdbinit"
-'6  1  45  ~/proj1-revise/.gdbint
-|4,54,1,45,1619694302,"~/proj1-revise/.gdbint"
-'7  43  0  ~/proj0-revise/main.c
-|4,55,43,0,1619237712,"~/proj0-revise/main.c"
-'8  1  0  ~/proj0-revise/_p30
-|4,56,1,0,1619234155,"~/proj0-revise/_p30"
-'9  1  0  ~/proj0-revise/_p30
-|4,57,1,0,1619234003,"~/proj0-revise/_p30"
+|4,53,1,46,1621282381,"~/.gdbinit"
+'6  1  0  ~/proj1-revise/.gdbinit
+|4,54,1,0,1620299576,"~/proj1-revise/.gdbinit"
+'7  199  0  ~/proj1-revise/Makefile
+|4,55,199,0,1619703557,"~/proj1-revise/Makefile"
+'8  1  46  ~/.gdbinit
+|4,56,1,46,1619694575,"~/.gdbinit"
+'9  1  46  ~/.gdbinit
+|4,57,1,46,1619694575,"~/.gdbinit"
 
 # Jumplist (newest first):
+-'  1  0  ~/.gdbinit
+|4,39,1,0,1624965997,"~/.gdbinit"
+-'  1  30  ~/.gdbinit
+|4,39,1,30,1623768944,"~/.gdbinit"
 -'  788  0  ~/submit-proj3/proj3.patch
 |4,39,788,0,1623112462,"~/submit-proj3/proj3.patch"
+-'  788  0  ~/submit-proj3/proj3.patch
+|4,39,788,0,1623112462,"~/submit-proj3/proj3.patch"
+-'  788  0  ~/submit-proj3/proj3.patch
+|4,39,788,0,1623112462,"~/submit-proj3/proj3.patch"
+-'  788  0  ~/submit-proj3/proj3.patch
+|4,39,788,0,1623112462,"~/submit-proj3/proj3.patch"
+-'  1  0  ~/submit-proj3/proj3.patch
+|4,39,1,0,1623112454,"~/submit-proj3/proj3.patch"
+-'  1  0  ~/submit-proj3/proj3.patch
+|4,39,1,0,1623112454,"~/submit-proj3/proj3.patch"
+-'  1  0  ~/submit-proj3/proj3.patch
+|4,39,1,0,1623112454,"~/submit-proj3/proj3.patch"
 -'  1  0  ~/submit-proj3/proj3.patch
 |4,39,1,0,1623112454,"~/submit-proj3/proj3.patch"
 -'  1  0  ~/proj3-revise/stru.h
 |4,39,1,0,1623042166,"~/proj3-revise/stru.h"
 -'  1  0  ~/proj3-revise/stru.h
 |4,39,1,0,1623042166,"~/proj3-revise/stru.h"
+-'  1  0  ~/proj3-revise/stru.h
+|4,39,1,0,1623042166,"~/proj3-revise/stru.h"
+-'  1  0  ~/proj3-revise/stru.h
+|4,39,1,0,1623042166,"~/proj3-revise/stru.h"
+-'  1  0  ~/proj3-revise/stru.h
+|4,39,1,0,1623042166,"~/proj3-revise/stru.h"
+-'  1  0  ~/proj3-revise/stru.h
+|4,39,1,0,1623042166,"~/proj3-revise/stru.h"
+-'  1  0  ~/proj3-revise/stru.h
+|4,39,1,0,1623042166,"~/proj3-revise/stru.h"
+-'  1  0  ~/proj3-revise/stru.h
+|4,39,1,0,1623042166,"~/proj3-revise/stru.h"
 -'  1  46  ~/.gdbinit
 |4,39,1,46,1621282381,"~/.gdbinit"
 -'  1  46  ~/.gdbinit
@@ -83,6 +113,54 @@
 |4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
 -'  1  0  ~/proj1-revise/.gdbinit
 |4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
+-'  1  0  ~/proj1-revise/.gdbinit
+|4,39,1,0,1620299576,"~/proj1-revise/.gdbinit"
 -'  199  0  ~/proj1-revise/Makefile
 |4,39,199,0,1619703557,"~/proj1-revise/Makefile"
 -'  199  0  ~/proj1-revise/Makefile
@@ -115,144 +193,75 @@
 |4,39,199,0,1619703557,"~/proj1-revise/Makefile"
 -'  199  0  ~/proj1-revise/Makefile
 |4,39,199,0,1619703557,"~/proj1-revise/Makefile"
--'  1  0  ~/proj1-revise/Makefile
-|4,39,1,0,1619703508,"~/proj1-revise/Makefile"
--'  1  0  ~/proj1-revise/Makefile
-|4,39,1,0,1619703508,"~/proj1-revise/Makefile"
--'  1  0  ~/proj1-revise/Makefile
-|4,39,1,0,1619703508,"~/proj1-revise/Makefile"
--'  1  0  ~/proj1-revise/Makefile
-|4,39,1,0,1619703508,"~/proj1-revise/Makefile"
--'  1  0  ~/proj1-revise/Makefile
-|4,39,1,0,1619703508,"~/proj1-revise/Makefile"
--'  1  0  ~/proj1-revise/Makefile
-|4,39,1,0,1619703508,"~/proj1-revise/Makefile"
--'  1  0  ~/proj1-revise/Makefile
-|4,39,1,0,1619703508,"~/proj1-revise/Makefile"
--'  1  0  ~/proj1-revise/Makefile
-|4,39,1,0,1619703508,"~/proj1-revise/Makefile"
--'  1  0  ~/proj1-revise/Makefile
-|4,39,1,0,1619703508,"~/proj1-revise/Makefile"
--'  1  0  ~/proj1-revise/Makefile
-|4,39,1,0,1619703508,"~/proj1-revise/Makefile"
--'  1  0  ~/proj1-revise/Makefile
-|4,39,1,0,1619703508,"~/proj1-revise/Makefile"
--'  1  0  ~/proj1-revise/Makefile
-|4,39,1,0,1619703508,"~/proj1-revise/Makefile"
--'  1  0  ~/proj1-revise/Makefile
-|4,39,1,0,1619703508,"~/proj1-revise/Makefile"
--'  1  0  ~/proj1-revise/Makefile
-|4,39,1,0,1619703508,"~/proj1-revise/Makefile"
--'  1  0  ~/proj1-revise/Makefile
-|4,39,1,0,1619703508,"~/proj1-revise/Makefile"
--'  1  0  ~/proj1-revise/Makefile
-|4,39,1,0,1619703508,"~/proj1-revise/Makefile"
--'  1  46  ~/.gdbinit
-|4,39,1,46,1619694575,"~/.gdbinit"
--'  1  46  ~/.gdbinit
-|4,39,1,46,1619694575,"~/.gdbinit"
--'  1  46  ~/.gdbinit
-|4,39,1,46,1619694575,"~/.gdbinit"
--'  1  46  ~/.gdbinit
-|4,39,1,46,1619694575,"~/.gdbinit"
--'  1  46  ~/.gdbinit
-|4,39,1,46,1619694575,"~/.gdbinit"
--'  1  46  ~/.gdbinit
-|4,39,1,46,1619694575,"~/.gdbinit"
--'  1  46  ~/.gdbinit
-|4,39,1,46,1619694575,"~/.gdbinit"
--'  1  46  ~/.gdbinit
-|4,39,1,46,1619694575,"~/.gdbinit"
--'  1  46  ~/.gdbinit
-|4,39,1,46,1619694575,"~/.gdbinit"
--'  1  46  ~/.gdbinit
-|4,39,1,46,1619694575,"~/.gdbinit"
--'  1  46  ~/.gdbinit
-|4,39,1,46,1619694575,"~/.gdbinit"
--'  1  46  ~/.gdbinit
-|4,39,1,46,1619694575,"~/.gdbinit"
--'  1  46  ~/.gdbinit
-|4,39,1,46,1619694575,"~/.gdbinit"
--'  1  46  ~/.gdbinit
-|4,39,1,46,1619694575,"~/.gdbinit"
--'  1  46  ~/.gdbinit
-|4,39,1,46,1619694575,"~/.gdbinit"
--'  1  46  ~/.gdbinit
-|4,39,1,46,1619694575,"~/.gdbinit"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
--'  1  45  ~/proj1-revise/.gdbint
-|4,39,1,45,1619694302,"~/proj1-revise/.gdbint"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
+-'  199  0  ~/proj1-revise/Makefile
+|4,39,199,0,1619703557,"~/proj1-revise/Makefile"
 
 # History of marks within files (newest to oldest):
+
+> ~/.gdbinit
+	*	1624965996	0
+	"	1	0
+	^	1	31
+	.	1	30
+	+	1	30
 
 > ~/submit-proj3/proj3.patch
 	*	1623112459	0
@@ -261,13 +270,6 @@
 > ~/proj3-revise/stru.h
 	*	1623042164	0
 	"	1	0
-
-> ~/.gdbinit
-	*	1621282379	0
-	"	1	46
-	^	1	47
-	.	1	31
-	+	1	31
 
 > ~/proj1-revise/.gdbinit
 	*	1620299573	0

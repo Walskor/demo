@@ -192,14 +192,29 @@ fork(void)
   }
 
   // Copy process state from proc.
-  if((np->pgdir = copyuvm(curproc->pgdir, curproc->sz)) == 0){
+  //--------------------------------------------------------------------------1
+  if(np->pid <= -1){
+    if((np->pgdir = copyuvm(curproc->pgdir, curproc->sz)) == 0){
+  
     kfree(np->kstack);
     np->kstack = 0;
     np->state = UNUSED;
     return -1;
+    } 
   }
+  else{
+    // cprintf("now pid %d fork into %d\n",myproc()->pid, np->pid);
+    if((np->pgdir = copyuvm_new(curproc->pgdir, curproc->sz)) == 0){
+  //--------------------------------------------------------------------------2
+    kfree(np->kstack);
+    np->kstack = 0;
+    np->state = UNUSED;
+    return -1;
+    } 
+  }
+  
   np->sz = curproc->sz;
-  np->parent = curproc;
+  np->parent = curproc; 
   *np->tf = *curproc->tf;
 
   // Clear %eax so that fork returns 0 in the child.
@@ -224,7 +239,7 @@ fork(void)
   }
 
   release(&ptable.lock);
-
+  // cprintf("before fork return in now pid %d fork into %d\n",myproc()->pid, pid);
   return pid;
 }
 

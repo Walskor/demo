@@ -146,6 +146,18 @@ struct segdesc {
 #define PTE_ADDR(pte)   ((uint)(pte) & ~0xFFF)
 #define PTE_FLAGS(pte)  ((uint)(pte) &  0xFFF)
 
+// modify the flags into unwritable,  retain other flags
+#define PTE_Clear_writable(pte) ((uint)(pte) & 0xFFFFFFFD) 
+
+// clear the flags units of AVL, and get ready to set these units to show "Copy on Writing"
+#define PTE_Clear_Val(pte) ((uint)(pte) & 0xFFFFF1FF)
+
+// set the flags units of AVL to be normal
+#define PTE_Set_Val_Normal(pte) ((uint)(pte) | 0x0)
+
+// set the flags units of AVL to be "Copy on Writing"
+#define PTE_Set_Val_Copy_on_Writing(pte) ((uint)(pte) | 0X200)
+
 #ifndef __ASSEMBLER__
 typedef uint pte_t;
 

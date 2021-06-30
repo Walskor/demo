@@ -115,3 +115,7 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+export HISTTIMEFORMAT="%d/%m/%y %T "
+
+export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
